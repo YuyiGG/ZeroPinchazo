@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZeroPinchazo | Vulcanización Móvil 24 Horas</title>
+    <title>ZeroPinchazo | Centro de Despacho y Cotización Express</title>
     
     <!-- Meta & Theme -->
     <meta name="theme-color" content="#f59e0b">
-    <meta name="description" content="Servicio de auxilio y reparación de neumáticos en tu ubicación exacta. Cotiza al instante según el GPS en vivo de nuestro móvil.">
+    <meta name="description" content="Panel de control y cotizador rápido de vulcanización móvil para el operador. Cotiza y despacha en segundos vía WhatsApp.">
 
     <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
         }
     </script>
 
-    <!-- Leaflet CSS & JS para Mapa Limpio y Claro -->
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
@@ -39,7 +39,7 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: #0f172a;
         }
 
@@ -48,257 +48,299 @@
         }
 
         .card-shadow {
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
         }
 
-        .highlight-shadow {
-            box-shadow: 0 12px 30px -6px rgba(22, 163, 74, 0.35);
+        .btn-green-shadow {
+            box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.35);
         }
 
-        /* Radar animado */
         .ping-soft {
             animation: pingSoft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
         @keyframes pingSoft {
             0% { transform: scale(1); opacity: 0.9; }
-            75%, 100% { transform: scale(2.4); opacity: 0; }
+            75%, 100% { transform: scale(2.2); opacity: 0; }
         }
 
         #map {
-            height: 240px;
-            border-radius: 1.25rem;
+            height: 220px;
+            border-radius: 1rem;
             z-index: 5;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-amber-100 selection:text-amber-900">
 
-    <!-- Encabezado Limpio con Nombre de Marca -->
+    <!-- Barra Superior: Rol Operador / Despacho -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            
+        <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow-md shadow-amber-500/20">
-                    <i data-lucide="wrench" class="w-5 h-5 text-slate-950"></i>
+                    <i data-lucide="headphones" class="w-5 h-5 text-slate-950"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-2">
                         <span class="font-heading font-black text-lg text-slate-900 tracking-tight">ZeroPinchazo</span>
-                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">MÓVIL 24/7</span>
+                        <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">PANEL OPERADOR</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
                         <span class="relative flex h-2 w-2">
                             <span class="ping-soft absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        <span id="headerStatusTexto">Técnico en ruta disponible</span>
+                        <span>Cotizador Express • Enlace Cliente & Técnico</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Botón Ajustes de Tarifas -->
-            <button onclick="toggleModalConfig()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Configurar Tarifas">
+            <!-- Botón Ajustar Tarifas Base -->
+            <button onclick="toggleModalConfig()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Ajustes de Tarifas">
                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
             </button>
         </div>
     </header>
 
-    <!-- Contenedor Principal (Optimizado para Celulares) -->
-    <main class="max-w-md w-full mx-auto px-4 py-3.5 flex-1 flex flex-col gap-3.5">
+    <!-- Contenedor de Trabajo del Operador -->
+    <main class="max-w-xl w-full mx-auto px-4 py-4 flex-1 flex flex-col gap-4">
 
-        <!-- Banner Dinámico: ¿Dónde está el Técnico? (ACTUALIZACIÓN RÁPIDA) -->
-        <div class="bg-white border-2 border-amber-500/30 rounded-3xl p-4 card-shadow">
-            <div class="flex items-center justify-between mb-2.5">
+        <!-- PASO 1: ¿Dónde está el Técnico? (Posición Rápida con 1 Clic) -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
                     <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
                         <i data-lucide="truck" class="w-4 h-4"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Ubicación del Técnico en Vivo</span>
-                        <span id="labelUbicacionTecnico" class="text-xs font-bold text-slate-900">Santiago Centro / Providencia</span>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 1: ¿Dónde anda el técnico ahora?</span>
+                        <span id="labelUbicacionTecnico" class="text-xs font-bold text-slate-900">Santiago Centro</span>
                     </div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">
-                    ● EN RUTA
-                </span>
+                <button onclick="tomarGPSActual()" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-xl transition flex items-center gap-1">
+                    <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                    <span>Mi GPS</span>
+                </button>
             </div>
 
-            <!-- Botones de Acción Rápida para el Técnico / Operador -->
-            <div class="space-y-2 pt-1 border-t border-slate-100">
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-slate-500 font-medium">¿Dónde está la camioneta ahora?</span>
-                    <!-- 1 Clic: El técnico presiona para tomar su GPS actual -->
-                    <button onclick="tecnicoTomarMiGPS()" class="text-amber-600 hover:text-amber-700 font-bold flex items-center gap-1 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-xl transition">
-                        <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
-                        <span>Tomar mi GPS</span>
-                    </button>
-                </div>
-
-                <!-- Selector de Comuna Rápida (1 Clic) -->
-                <div class="grid grid-cols-4 gap-1 text-[11px]">
-                    <button onclick="setPosicionTecnicoRapida(-33.4372, -70.6345, 'Santiago Centro')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Centro</button>
-                    <button onclick="setPosicionTecnicoRapida(-33.4255, -70.6120, 'Providencia')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Providencia</button>
-                    <button onclick="setPosicionTecnicoRapida(-33.4115, -70.5785, 'Las Condes')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Las Condes</button>
-                    <button onclick="setPosicionTecnicoRapida(-33.5130, -70.5980, 'La Florida')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">La Florida</button>
-                </div>
-                <div class="grid grid-cols-4 gap-1 text-[11px]">
-                    <button onclick="setPosicionTecnicoRapida(-33.5100, -70.7570, 'Maipú')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Maipú</button>
-                    <button onclick="setPosicionTecnicoRapida(-33.4560, -70.6020, 'Ñuñoa')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Ñuñoa</button>
-                    <button onclick="setPosicionTecnicoRapida(-33.4350, -70.7800, 'Pudahuel / Ruta 68')" class="bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">Pudahuel</button>
-                    <button onclick="toggleModalCoordenadas()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 py-1.5 px-1 rounded-xl font-semibold transition text-center truncate">+ Manual</button>
-                </div>
+            <!-- Botones de Comunas Rápidas -->
+            <div class="grid grid-cols-4 gap-1.5 pt-1 text-xs">
+                <button onclick="setPosicionTecnico(-33.4372, -70.6345, 'Santiago Centro')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Centro</button>
+                <button onclick="setPosicionTecnico(-33.4255, -70.6120, 'Providencia')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Providencia</button>
+                <button onclick="setPosicionTecnico(-33.4115, -70.5785, 'Las Condes')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Las Condes</button>
+                <button onclick="setPosicionTecnico(-33.5130, -70.5980, 'La Florida')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">La Florida</button>
+                <button onclick="setPosicionTecnico(-33.5100, -70.7570, 'Maipú')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Maipú</button>
+                <button onclick="setPosicionTecnico(-33.4560, -70.6020, 'Ñuñoa')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Ñuñoa</button>
+                <button onclick="setPosicionTecnico(-33.4350, -70.7800, 'Pudahuel / R68')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Pudahuel</button>
+                <button onclick="abrirCoordenadasManuales()" class="btn-comuna bg-slate-200 hover:bg-slate-300 text-slate-800 py-1.5 rounded-xl font-semibold transition text-center truncate">+ Coordenadas</button>
             </div>
         </div>
 
-        <!-- Tarjeta de Solicitud del Cliente -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 card-shadow space-y-4">
-            
-            <div class="space-y-0.5">
-                <span class="text-xs font-bold text-amber-600 uppercase tracking-wide">Paso 1</span>
-                <h2 class="font-heading font-black text-xl text-slate-900 block leading-tight">
-                    ¿Dónde necesitas el auxilio?
+        <!-- PASO 2: Datos del Cliente que te está consultando -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 card-shadow space-y-3.5">
+            <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 2: Datos del Cliente</span>
+                <h2 class="font-heading font-black text-lg text-slate-900 leading-tight">
+                    ¿Qué dirección te dio el cliente?
                 </h2>
-                <p class="text-xs text-slate-500 font-medium">
-                    Calculamos la llegada y presupuesto al instante.
+                <p class="text-xs text-slate-500">
+                    Pega la dirección, el cruce de calles o el enlace de Google Maps que te envió el cliente por WhatsApp.
                 </p>
             </div>
 
-            <!-- Botón Grande de 1 Clic para el Cliente -->
-            <button id="btnGeo" onclick="obtenerUbicacionGPSCliente()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold py-4 px-4 rounded-2xl flex items-center justify-center gap-3 highlight-shadow transition-all group">
-                <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <i data-lucide="crosshair" class="w-5 h-5 text-white"></i>
-                </div>
-                <div class="text-left">
-                    <div class="text-sm font-extrabold leading-none">USAR MI UBICACIÓN ACTUAL</div>
-                    <div class="text-[11px] font-normal text-emerald-100 mt-0.5">Detección GPS rápida en 1 clic</div>
-                </div>
-            </button>
-
-            <!-- Separador -->
-            <div class="flex items-center gap-3 my-1">
-                <div class="h-[1px] flex-1 bg-slate-200"></div>
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">o escribe una dirección</span>
-                <div class="h-[1px] flex-1 bg-slate-200"></div>
-            </div>
-
-            <!-- Formulario de Dirección -->
-            <form onsubmit="cotizarDireccionTexto(event)" class="space-y-2.5">
+            <!-- Input de Dirección o Coordenadas del Cliente -->
+            <form onsubmit="ejecutarCotizacion(event)" class="space-y-3">
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>
                     </div>
                     <input 
                         type="text" 
-                        id="inputDireccion" 
-                        placeholder="Ej: Av. Providencia 1234, Providencia" 
+                        id="inputDireccionCliente" 
+                        placeholder="Ej: Av. Providencia 1234, Providencia (o coordenadas)" 
                         value="Av. Providencia 1234, Santiago"
                         class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 transition"
                     >
                 </div>
 
-                <!-- Chips Rápidos -->
-                <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="seleccionarChip('Plaza Italia, Santiago')" class="text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">📍 Plaza Italia</button>
-                    <button type="button" onclick="seleccionarChip('Costanera Center, Providencia')" class="text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">📍 Costanera</button>
-                    <button type="button" onclick="seleccionarChip('Mall Plaza Vespucio, La Florida')" class="text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">📍 Vespucio</button>
+                <!-- Chips de prueba rápida -->
+                <div class="flex flex-wrap gap-1.5 text-[11px]">
+                    <span class="text-slate-400 text-[10px] self-center mr-1">Ejemplos:</span>
+                    <button type="button" onclick="setDireccionRapida('Plaza Italia, Santiago')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Plaza Italia</button>
+                    <button type="button" onclick="setDireccionRapida('Mall Plaza Vespucio, La Florida')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Vespucio</button>
+                    <button type="button" onclick="setDireccionRapida('Costanera Center, Providencia')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Costanera</button>
                 </div>
 
-                <button type="submit" id="btnCalcular" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md transition active:scale-[0.98]">
-                    <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
-                    <span>Calcular Distancia y Presupuesto</span>
-                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">WhatsApp del Cliente (Opcional):</label>
+                        <input 
+                            type="text" 
+                            id="inputTelefonoCliente" 
+                            placeholder="+569..." 
+                            class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 rounded-xl py-2 px-3 text-xs font-semibold text-slate-800 transition"
+                        >
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" id="btnCalcular" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 text-xs shadow-md transition active:scale-[0.98]">
+                            <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
+                            <span>Calcular Presupuesto</span>
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
 
-        <!-- Tarjeta de Resultados (Clara y Convincente) -->
+        <!-- PASO 3: Resultado de Cotización + Generador de Mensajes WhatsApp -->
         <div id="cardResultado" class="hidden bg-white border-2 border-emerald-500/30 rounded-3xl p-5 card-shadow space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-200">
             
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-heading font-bold text-sm text-slate-900">Cotización Estimada</h3>
-                        <p id="labelDestino" class="text-xs text-slate-500 font-medium truncate max-w-[210px]">Destino</p>
-                    </div>
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                        ✓
+                    </span>
+                    <h3 class="font-heading font-black text-sm text-slate-900 uppercase tracking-wide">
+                        Cotización Calculada
+                    </h3>
                 </div>
-                <span class="bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-                    DISPONIBLE
+                <span id="labelProveedorRuta" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                    Ruta en vivo (OSRM)
                 </span>
             </div>
 
             <!-- Métricas Clave -->
             <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5">
                     <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Distancia</span>
-                    <span id="valorKm" class="font-heading text-base font-extrabold text-slate-800">0.0 km</span>
+                    <span id="resKm" class="font-heading text-lg font-black text-slate-900">0.0 km</span>
                 </div>
-                <div class="bg-amber-50 border border-amber-100 rounded-2xl p-3">
-                    <span class="text-[10px] uppercase font-bold text-amber-700 block mb-0.5">Llegada</span>
-                    <span id="valorMin" class="font-heading text-base font-extrabold text-amber-700">~0 min</span>
+                <div class="bg-amber-50 border border-amber-100 rounded-2xl p-2.5">
+                    <span class="text-[10px] uppercase font-bold text-amber-700 block mb-0.5">Tiempo Llegada</span>
+                    <span id="resMin" class="font-heading text-lg font-black text-amber-700">~0 min</span>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-3">
-                    <span class="text-[10px] uppercase font-bold text-emerald-700 block mb-0.5">Total</span>
-                    <span id="valorTotal" class="font-heading text-base font-extrabold text-emerald-700">$0</span>
+                <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-2.5">
+                    <span class="text-[10px] uppercase font-bold text-emerald-700 block mb-0.5">Presupuesto</span>
+                    <span id="resPrecio" class="font-heading text-lg font-black text-emerald-700">$0</span>
                 </div>
             </div>
 
-            <!-- Desglose Honesto -->
-            <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/60 text-xs space-y-2">
+            <!-- Desglose de Tarifas -->
+            <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 text-xs space-y-1.5">
                 <div class="flex justify-between text-slate-600">
-                    <span class="flex items-center gap-1.5">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-amber-500"></i> Salida técnica y diagnóstico:
-                    </span>
+                    <span>Salida técnica base:</span>
                     <span id="desgloseBase" class="font-bold text-slate-800">$15.000</span>
                 </div>
                 <div class="flex justify-between text-slate-600">
-                    <span class="flex items-center gap-1.5">
-                        <i data-lucide="navigation" class="w-3.5 h-3.5 text-amber-500"></i> Desplazamiento (<span id="desgloseKmExtra">0 km</span> extras):
-                    </span>
+                    <span>Km extras (<span id="desgloseKmExtra">0 km</span> adicionales):</span>
                     <span id="desgloseKmCosto" class="font-bold text-slate-800">$0</span>
                 </div>
-                <div class="border-t border-slate-200 pt-2 flex justify-between items-center text-slate-900 font-bold">
-                    <span>Monto Total Estimado (CLP):</span>
-                    <span id="desgloseTotalFinal" class="font-heading text-base font-black text-emerald-600">$18.000</span>
+                <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center text-slate-900 font-bold">
+                    <span>Total Presupuestado (CLP):</span>
+                    <span id="desgloseTotalFinal" class="text-sm font-black text-emerald-600">$18.000</span>
                 </div>
                 <div class="text-[10px] text-slate-400 text-center italic">
                     Rango estimado: <span id="desgloseRango" class="text-slate-600 font-semibold">$16.500 a $20.000</span>
                 </div>
             </div>
 
-            <!-- Mapa -->
+            <!-- Mapa Visual de Ruta -->
             <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                 <div id="map"></div>
             </div>
 
-            <!-- Botón Grande de WhatsApp -->
-            <a id="btnWhatsAppDirecto" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-4 rounded-2xl flex items-center justify-center gap-2.5 highlight-shadow active:scale-[0.98] transition">
-                <i data-lucide="message-circle" class="w-5 h-5 fill-white"></i>
-                <span class="text-sm font-heading font-black tracking-wide">CONFIRMAR Y ENVIAR TÉCNICO</span>
-            </a>
+            <!-- CAJA DE MENSAJE LISTO PARA EL CLIENTE -->
+            <div class="space-y-2 pt-1 border-t border-slate-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i>
+                        Mensaje para responder al Cliente:
+                    </span>
+                    <button onclick="copiarMensajeCliente()" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-xl transition flex items-center gap-1">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span id="btnCopiarTexto">Copiar Texto</span>
+                    </button>
+                </div>
 
-            <!-- Medios de Pago -->
-            <div class="flex items-center justify-center gap-4 text-[11px] text-slate-500 font-medium">
-                <span class="flex items-center gap-1"><i data-lucide="credit-card" class="w-3.5 h-3.5 text-slate-400"></i> Redcompra / Tarjetas</span>
-                <span class="flex items-center gap-1"><i data-lucide="smartphone" class="w-3.5 h-3.5 text-slate-400"></i> Transferencia</span>
-                <span class="flex items-center gap-1"><i data-lucide="banknote" class="w-3.5 h-3.5 text-slate-400"></i> Efectivo</span>
+                <!-- Textarea con el mensaje comercial ya armado -->
+                <textarea 
+                    id="txtMensajeCliente" 
+                    rows="5" 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-medium text-slate-800 leading-relaxed outline-none focus:bg-white focus:border-emerald-500"
+                ></textarea>
+
+                <!-- BOTONES DE ACCIÓN PARA EL OPERADOR -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <!-- Enviar por WhatsApp al Cliente -->
+                    <a id="btnEnviarClienteWsp" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs btn-green-shadow transition text-center">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Enviar al Cliente</span>
+                    </a>
+
+                    <!-- Enviar orden de despacho al Técnico -->
+                    <a id="btnDespacharTecnicoWsp" href="#" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md transition text-center">
+                        <i data-lucide="navigation" class="w-4 h-4"></i>
+                        <span>Despachar Técnico</span>
+                    </a>
+                </div>
             </div>
+
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="py-4 text-center text-slate-400 text-xs border-t border-slate-200 bg-white">
-        <p class="font-medium text-slate-600">ZeroPinchazo Móvil • Auxilio Mecánico y Vulcanización a Domicilio</p>
-        <p class="text-[11px] text-slate-400 mt-0.5">Santiago, Chile • Atención las 24 horas</p>
+    <footer class="py-3 text-center text-slate-400 text-xs border-t border-slate-200 bg-white">
+        <p class="font-medium text-slate-600">ZeroPinchazo Móvil • Despacho Rápido en Santiago</p>
     </footer>
 
-    <!-- Modal para Coordenadas Manuales del Técnico (Oculto) -->
+    <!-- Modal Ajuste de Tarifas y WhatsApp del Técnico -->
+    <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                <h4 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-amber-500"></i> Ajustes del Negocio
+                </h4>
+                <button onclick="toggleModalConfig()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="text-slate-600 font-bold block mb-1">WhatsApp del Técnico (para despacharle la ruta):</label>
+                    <input type="text" id="cfgWhatsappTecnico" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="+56912345678">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-slate-500 block mb-0.5">Cargo Base (Salida):</label>
+                        <input type="number" id="cfgBase" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="15000">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 block mb-0.5">Precio por Km Extra:</label>
+                        <input type="number" id="cfgPrecioKm" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="1200">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 block mb-0.5">Km Incluidos:</label>
+                        <input type="number" id="cfgKmInc" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="3">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 block mb-0.5">Cobro Mínimo:</label>
+                        <input type="number" id="cfgMinimo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="18000">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="guardarAjustes()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-2xl text-xs transition">
+                Guardar Ajustes
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Coordenadas Manuales del Técnico -->
     <div id="modalCoordenadas" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-5 max-w-xs w-full space-y-3 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h4 class="font-heading font-bold text-sm text-slate-900">Ingresar Coordenadas</h4>
+                <h4 class="font-heading font-bold text-sm text-slate-900">Coordenadas del Técnico</h4>
                 <button onclick="toggleModalCoordenadas()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
@@ -313,57 +355,13 @@
                     <input type="number" step="0.0001" id="inputManualLng" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-bold" value="-70.6345">
                 </div>
             </div>
-            <button onclick="guardarCoordenadasManuales()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">
-                Guardar Posición
+            <button onclick="guardarCoordenadasManuales()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-xl text-xs transition">
+                Fijar Posición
             </button>
         </div>
     </div>
 
-    <!-- Modal Ajustes Tarifas (Oculto) -->
-    <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl border border-slate-100">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h4 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2">
-                    <i data-lucide="sliders" class="w-4 h-4 text-amber-500"></i> Configuración de Tarifas
-                </h4>
-                <button onclick="toggleModalConfig()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-
-            <div class="space-y-3 text-xs">
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="text-slate-500 block mb-0.5 font-medium">Cargo Base (Salida):</label>
-                        <input type="number" id="cfgBase" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="15000">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5 font-medium">Precio por Km Extra:</label>
-                        <input type="number" id="cfgPrecioKm" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="1200">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5 font-medium">Km Incluidos:</label>
-                        <input type="number" id="cfgKmInc" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="3">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5 font-medium">Cobro Mínimo:</label>
-                        <input type="number" id="cfgMinimo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="18000">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-slate-500 block mb-0.5 font-medium">WhatsApp del Taller para recibir alertas:</label>
-                    <input type="text" id="cfgWhatsapp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="+56912345678">
-                </div>
-            </div>
-
-            <button onclick="guardarAjustesTarifa()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-2xl text-xs transition shadow-sm">
-                Guardar Ajustes
-            </button>
-        </div>
-    </div>
-
-    <!-- Script de Lógica -->
+    <!-- Lógica de Operador -->
     <script>
         lucide.createIcons();
 
@@ -380,7 +378,7 @@
                 minimo: parseInt(localStorage.getItem('zp_min')) || 18000,
                 redondeo: 500,
                 margen: 0.10,
-                whatsapp: localStorage.getItem('zp_wsp') || '+56912345678'
+                whatsappTecnico: localStorage.getItem('zp_wsp_tec') || '+56912345678'
             },
             cliente: null,
             map: null,
@@ -399,7 +397,11 @@
             document.getElementById('modalCoordenadas').classList.toggle('hidden');
         }
 
-        function setPosicionTecnicoRapida(lat, lng, nombre) {
+        function abrirCoordenadasManuales() {
+            toggleModalCoordenadas();
+        }
+
+        function setPosicionTecnico(lat, lng, nombre) {
             APP.tecnico.lat = lat;
             APP.tecnico.lng = lng;
             APP.tecnico.nombre = nombre;
@@ -411,23 +413,17 @@
             document.getElementById('inputManualLat').value = lat;
             document.getElementById('inputManualLng').value = lng;
 
-            actualizarUbicacionTecnicoLabel();
-            if (APP.cliente) recalcularPresupuesto();
+            actualizarEtiquetaTecnico();
+            if (APP.cliente) recalcularCotizacion();
         }
 
-        function tecnicoTomarMiGPS() {
-            if (!navigator.geolocation) {
-                alert('Tu navegador no soporta geolocalización.');
-                return;
-            }
+        function tomarGPSActual() {
+            if (!navigator.geolocation) return alert('Navegador no soporta GPS.');
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    setPosicionTecnicoRapida(pos.coords.latitude, pos.coords.longitude, 'Ubicación GPS del Móvil 📍');
-                    alert('¡GPS de la camioneta técnica actualizado con éxito!');
+                    setPosicionTecnico(pos.coords.latitude, pos.coords.longitude, 'Mi GPS Actual 📍');
                 },
-                (err) => {
-                    alert('No se pudo acceder al GPS. Asegúrate de permitir el acceso en tu navegador.');
-                },
+                (err) => alert('No se pudo obtener el GPS.'),
                 { enableHighAccuracy: true, timeout: 6000 }
             );
         }
@@ -436,125 +432,83 @@
             const lat = parseFloat(document.getElementById('inputManualLat').value);
             const lng = parseFloat(document.getElementById('inputManualLng').value);
             if (isNaN(lat) || isNaN(lng)) return alert('Coordenadas inválidas');
-            setPosicionTecnicoRapida(lat, lng, `Manual (${lat.toFixed(3)}, ${lng.toFixed(3)})`);
+            setPosicionTecnico(lat, lng, `Manual (${lat.toFixed(3)}, ${lng.toFixed(3)})`);
             toggleModalCoordenadas();
         }
 
-        function guardarAjustesTarifa() {
+        function guardarAjustes() {
             APP.tarifas.cargoBase = parseInt(document.getElementById('cfgBase').value) || 15000;
             APP.tarifas.precioKm = parseInt(document.getElementById('cfgPrecioKm').value) || 1200;
             APP.tarifas.kmIncluidos = parseInt(document.getElementById('cfgKmInc').value) || 3;
             APP.tarifas.minimo = parseInt(document.getElementById('cfgMinimo').value) || 18000;
-            APP.tarifas.whatsapp = document.getElementById('cfgWhatsapp').value.trim() || '+56912345678';
+            APP.tarifas.whatsappTecnico = document.getElementById('cfgWhatsappTecnico').value.trim() || '+56912345678';
 
             localStorage.setItem('zp_base', APP.tarifas.cargoBase);
             localStorage.setItem('zp_km', APP.tarifas.precioKm);
             localStorage.setItem('zp_kminc', APP.tarifas.kmIncluidos);
             localStorage.setItem('zp_min', APP.tarifas.minimo);
-            localStorage.setItem('zp_wsp', APP.tarifas.whatsapp);
+            localStorage.setItem('zp_wsp_tec', APP.tarifas.whatsappTecnico);
 
             toggleModalConfig();
-            if (APP.cliente) recalcularPresupuesto();
+            if (APP.cliente) recalcularCotizacion();
         }
 
-        function actualizarUbicacionTecnicoLabel() {
+        function actualizarEtiquetaTecnico() {
             document.getElementById('labelUbicacionTecnico').innerText = 
                 `${APP.tecnico.nombre} (${APP.tecnico.lat.toFixed(3)}, ${APP.tecnico.lng.toFixed(3)})`;
         }
 
-        function seleccionarChip(direccion) {
-            document.getElementById('inputDireccion').value = direccion;
-            cotizarDireccionTexto(new Event('submit'));
+        function setDireccionRapida(dir) {
+            document.getElementById('inputDireccionCliente').value = dir;
+            ejecutarCotizacion(new Event('submit'));
         }
 
-        // Geolocalización del Cliente (1 Clic)
-        function obtenerUbicacionGPSCliente() {
-            const btn = document.getElementById('btnGeo');
-            if (!navigator.geolocation) {
-                alert('Tu teléfono no soporta GPS automático. Por favor escribe tu dirección en el recuadro.');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Conectando con satélite GPS...`;
-
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    btn.disabled = false;
-                    btn.innerHTML = `
-                        <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
-                            <i data-lucide="crosshair" class="w-5 h-5 text-white"></i>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-sm font-extrabold leading-none">USAR MI UBICACIÓN ACTUAL</div>
-                            <div class="text-[11px] font-normal text-emerald-100 mt-0.5">Detección GPS rápida en 1 clic</div>
-                        </div>
-                    `;
-                    lucide.createIcons();
-
-                    APP.cliente = {
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude,
-                        direccion: 'Tu ubicación exacta actual 📍'
-                    };
-                    document.getElementById('inputDireccion').value = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-                    recalcularPresupuesto();
-                },
-                (err) => {
-                    btn.disabled = false;
-                    btn.innerHTML = `
-                        <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
-                            <i data-lucide="crosshair" class="w-5 h-5 text-white"></i>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-sm font-extrabold leading-none">USAR MI UBICACIÓN ACTUAL</div>
-                            <div class="text-[11px] font-normal text-emerald-100 mt-0.5">Detección GPS rápida en 1 clic</div>
-                        </div>
-                    `;
-                    lucide.createIcons();
-                    alert('No se pudo acceder al GPS. Por favor escribe tu calle o comuna.');
-                },
-                { enableHighAccuracy: true, timeout: 8000 }
-            );
-        }
-
-        // Búsqueda por Texto
-        async function cotizarDireccionTexto(e) {
+        async function ejecutarCotizacion(e) {
             if (e) e.preventDefault();
-            const query = document.getElementById('inputDireccion').value.trim();
+            const query = document.getElementById('inputDireccionCliente').value.trim();
             if (!query) return;
 
             const btn = document.getElementById('btnCalcular');
             btn.disabled = true;
-            btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Calculando distancia...`;
+            btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Buscando...`;
 
             try {
-                const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=cl&q=${encodeURIComponent(query)}&limit=1`);
-                const data = await resp.json();
-
-                if (data && data.length > 0) {
-                    const r = data[0];
+                // Verificar si el usuario escribió coordenadas directamente (ej: -33.42, -70.61)
+                const coordMatch = query.match(/(-?\d+\.\d+)[,\s]+(-?\d+\.\d+)/);
+                if (coordMatch) {
                     APP.cliente = {
-                        lat: parseFloat(r.lat),
-                        lng: parseFloat(r.lon),
-                        direccion: query
+                        lat: parseFloat(coordMatch[1]),
+                        lng: parseFloat(coordMatch[2]),
+                        direccion: `Ubicación GPS (${coordMatch[1]}, ${coordMatch[2]})`
                     };
-                    await recalcularPresupuesto();
+                    await recalcularCotizacion();
                 } else {
-                    alert('No se encontró esa dirección exacta. Por favor incluye la comuna (ej: Ñuñoa, Maipú, Providencia).');
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=cl&q=${encodeURIComponent(query)}&limit=1`);
+                    const data = await resp.json();
+
+                    if (data && data.length > 0) {
+                        const r = data[0];
+                        APP.cliente = {
+                            lat: parseFloat(r.lat),
+                            lng: parseFloat(r.lon),
+                            direccion: query
+                        };
+                        await recalcularCotizacion();
+                    } else {
+                        alert('No se encontró esa dirección. Intenta agregar la comuna (ej: Providencia, Santiago, Maipú).');
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                alert('Hubo un error al buscar el mapa. Inténtalo de nuevo.');
+                alert('Error al calcular la ruta.');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i><span>Calcular Distancia y Presupuesto</span>`;
+                btn.innerHTML = `<i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i><span>Calcular Presupuesto</span>`;
                 lucide.createIcons();
             }
         }
 
-        // Cálculo de Ruta y Tarifa
-        async function recalcularPresupuesto() {
+        async function recalcularCotizacion() {
             if (!APP.cliente) return;
 
             const tLat = APP.tecnico.lat;
@@ -576,10 +530,9 @@
                     minutos = Math.max(5, Math.ceil((ruta.duration * 1.15) / 60));
                     dibujarMapa(ruta.geometry);
                 } else {
-                    throw new Error('OSRM no calculó');
+                    throw new Error('OSRM error');
                 }
             } catch (err) {
-                // Haversine fallback
                 const dLat = (cLat - tLat) * Math.PI / 180;
                 const dLon = (cLng - tLng) * Math.PI / 180;
                 const a = Math.sin(dLat/2)**2 + Math.cos(tLat * Math.PI / 180) * Math.cos(cLat * Math.PI / 180) * Math.sin(dLon/2)**2;
@@ -589,7 +542,7 @@
                 dibujarMapa(null);
             }
 
-            // Aplicación de Tarifas
+            // Tarifas
             const kmExtra = Math.max(0, km - APP.tarifas.kmIncluidos);
             const costoKm = kmExtra * APP.tarifas.precioKm;
             const subtotal = Math.max(APP.tarifas.cargoBase + costoKm, APP.tarifas.minimo);
@@ -598,11 +551,10 @@
             const minimo = Math.ceil((subtotal * (1 - APP.tarifas.margen)) / paso) * paso;
             const maximo = Math.ceil((subtotal * (1 + APP.tarifas.margen)) / paso) * paso;
 
-            // Renderizado en Pantalla
-            document.getElementById('labelDestino').innerText = APP.cliente.direccion;
-            document.getElementById('valorKm').innerText = `${km.toFixed(1)} km`;
-            document.getElementById('valorMin').innerText = `~${minutos} min`;
-            document.getElementById('valorTotal').innerText = formatoCLP(estimado);
+            // Renderizado Métricas
+            document.getElementById('resKm').innerText = `${km.toFixed(1)} km`;
+            document.getElementById('resMin').innerText = `~${minutos} min`;
+            document.getElementById('resPrecio').innerText = formatoCLP(estimado);
 
             document.getElementById('desgloseBase').innerText = formatoCLP(APP.tarifas.cargoBase);
             document.getElementById('desgloseKmExtra').innerText = `${kmExtra.toFixed(1)} km`;
@@ -610,27 +562,58 @@
             document.getElementById('desgloseTotalFinal').innerText = formatoCLP(estimado);
             document.getElementById('desgloseRango').innerText = `${formatoCLP(minimo)} a ${formatoCLP(maximo)}`;
 
-            // Generador de Mensaje de WhatsApp
-            const textoWhatsApp = encodeURIComponent(
-                `👋 ¡Hola ZeroPinchazo! Necesito auxilio móvil con urgencia:\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `📍 Ubicación: ${APP.cliente.direccion}\n` +
-                `📏 Distancia del técnico: ${km.toFixed(1)} km\n` +
-                `⏱️ Llegada estimada: ~${minutos} minutos\n` +
-                `💰 Presupuesto cotizado: ${formatoCLP(estimado)}\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `👉 Por favor confirmar el despacho del móvil a mi ubicación.`
-            );
-            const numLimpio = APP.tarifas.whatsapp.replace(/[^0-9]/g, '');
-            document.getElementById('btnWhatsAppDirecto').href = `https://wa.me/${numLimpio}?text=${textoWhatsApp}`;
+            // MENSAJE FORMATEADO PARA EL CLIENTE (Listo para responderle)
+            const mensajeParaCliente = 
+                `¡Hola! 👋 Gracias por comunicarte con *ZeroPinchazo Móvil* 🛞⚡\n\n` +
+                `Para tu ubicación en *${APP.cliente.direccion}*:\n` +
+                `📏 *Distancia del móvil:* ${km.toFixed(1)} km\n` +
+                `⏱️ *Tiempo estimado de llegada:* ~${minutos} minutos\n` +
+                `💰 *Presupuesto estimado:* *${formatoCLP(estimado)}* (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})\n\n` +
+                `Incluye salida técnica a domicilio, diagnóstico y reparación básica in situ.\n` +
+                `Aceptamos Efectivo, Transferencia y Tarjetas 💳\n\n` +
+                `¿Te enviamos al técnico de inmediato? *Responde SÍ para confirmar el despacho.*`;
 
-            const resultado = document.getElementById('cardResultado');
-            resultado.classList.remove('hidden');
-            resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
+
+            // Link WhatsApp para responder al Cliente
+            const telCliente = document.getElementById('inputTelefonoCliente').value.replace(/[^0-9]/g, '');
+            const urlClienteWsp = telCliente 
+                ? `https://wa.me/${telCliente}?text=${encodeURIComponent(mensajeParaCliente)}`
+                : `https://wa.me/?text=${encodeURIComponent(mensajeParaCliente)}`;
+            document.getElementById('btnEnviarClienteWsp').href = urlClienteWsp;
+
+            // Link WhatsApp para Despachar al Técnico
+            const mensajeTecnico = 
+                `🚨 *NUEVO SERVICIO DESPACHADO - ZEROPINCHAZO*\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                `📍 *Destino Cliente:* ${APP.cliente.direccion}\n` +
+                `🗺️ *Ver en Google Maps:* https://www.google.com/maps/dir/?api=1&destination=${cLat},${cLng}\n` +
+                `📏 *Distancia estimada:* ${km.toFixed(1)} km\n` +
+                `⏱️ *Tiempo estimado:* ~${minutos} min\n` +
+                `💰 *Valor a cobrar:* ${formatoCLP(estimado)}\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                `👉 Por favor confirmar que vas en camino al destino.`;
+
+            const telTecnico = APP.tarifas.whatsappTecnico.replace(/[^0-9]/g, '');
+            document.getElementById('btnDespacharTecnicoWsp').href = `https://wa.me/${telTecnico}?text=${encodeURIComponent(mensajeTecnico)}`;
+
+            const card = document.getElementById('cardResultado');
+            card.classList.remove('hidden');
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             lucide.createIcons();
         }
 
-        // Renderizado del Mapa con Leaflet
+        function copiarMensajeCliente() {
+            const txt = document.getElementById('txtMensajeCliente');
+            txt.select();
+            txt.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(txt.value).then(() => {
+                const btn = document.getElementById('btnCopiarTexto');
+                btn.innerText = '¡Copiado! ✓';
+                setTimeout(() => { btn.innerText = 'Copiar Texto'; }, 2000);
+            });
+        }
+
         function dibujarMapa(geometry) {
             if (!APP.map) {
                 APP.map = L.map('map', { zoomControl: false }).setView([APP.tecnico.lat, APP.tecnico.lng], 13);
@@ -643,20 +626,18 @@
             APP.layers.forEach(l => APP.map.removeLayer(l));
             APP.layers = [];
 
-            // Icono Móvil Asistencia
             const iconTecnico = L.divIcon({
-                html: '<div style="background:#f59e0b;color:#0f172a;padding:8px;border-radius:14px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">🚗</div>',
+                html: '<div style="background:#f59e0b;color:#0f172a;padding:7px;border-radius:12px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">🚗</div>',
                 className: '',
-                iconSize: [34, 34]
+                iconSize: [32, 32]
             });
             const mTecnico = L.marker([APP.tecnico.lat, APP.tecnico.lng], { icon: iconTecnico }).addTo(APP.map);
             APP.layers.push(mTecnico);
 
-            // Icono Cliente
             const iconCliente = L.divIcon({
-                html: '<div style="background:#16a34a;color:#ffffff;padding:8px;border-radius:14px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">📍</div>',
+                html: '<div style="background:#16a34a;color:#ffffff;padding:7px;border-radius:12px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">📍</div>',
                 className: '',
-                iconSize: [34, 34]
+                iconSize: [32, 32]
             });
             const mCliente = L.marker([APP.cliente.lat, APP.cliente.lng], { icon: iconCliente }).addTo(APP.map);
             APP.layers.push(mCliente);
@@ -666,17 +647,17 @@
                     style: { color: '#2563eb', weight: 5, opacity: 0.85 }
                 }).addTo(APP.map);
                 APP.layers.push(poly);
-                APP.map.fitBounds(poly.getBounds(), { padding: [35, 35] });
+                APP.map.fitBounds(poly.getBounds(), { padding: [30, 30] });
             } else {
                 const g = L.featureGroup([mTecnico, mCliente]);
-                APP.map.fitBounds(g.getBounds(), { padding: [35, 35] });
+                APP.map.fitBounds(g.getBounds(), { padding: [30, 30] });
             }
 
             setTimeout(() => APP.map.invalidateSize(), 200);
         }
 
-        actualizarUbicacionTecnicoLabel();
-        cotizarDireccionTexto();
+        actualizarEtiquetaTecnico();
+        ejecutarCotizacion();
     </script>
 </body>
 </html>
