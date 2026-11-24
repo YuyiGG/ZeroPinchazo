@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZeroPinchazo | Centro de Despacho y Cotización Express</title>
-    
-    <!-- Meta & Theme -->
+    <title>ZeroPinchazo | Panel Operador</title>
     <meta name="theme-color" content="#f59e0b">
-    <meta name="description" content="Centro de despacho de vulcanización móvil y auxilio de baterías en Santiago de Chile. Cotizador oficial ZeroPinchazo.">
+    <meta name="description" content="Panel de cotizacion y despacho de vulcanizacion movil ZeroPinchazo. Santiago de Chile.">
 
-    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,38 +21,62 @@
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         heading: ['Outfit', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            50:  '#fffbeb',
+                            100: '#fef3c7',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            900: '#78350f'
+                        }
                     }
                 }
             }
         }
     </script>
 
-    <!-- Leaflet CSS & JS -->
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
             color: #0f172a;
         }
+        h1,h2,h3,h4,h5,.font-heading { font-family: 'Outfit', sans-serif; }
 
-        h1, h2, h3, h4, .font-heading {
-            font-family: 'Outfit', sans-serif;
+        /* Animated gradient header */
+        .header-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #292524 100%);
+            border-bottom: 1px solid rgba(245,158,11,0.15);
         }
 
-        .card-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
+        /* Cards */
+        .glass-card {
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226,232,240,0.8);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,0,0,0.06);
+        }
+        .glass-card-result {
+            background: rgba(255,255,255,0.98);
+            border: 1.5px solid rgba(16,185,129,0.25);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(16,185,129,0.1), 0 8px 16px -4px rgba(0,0,0,0.06);
         }
 
-        .btn-green-shadow {
-            box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.35);
-        }
-
+        /* Ping animation */
         .ping-soft {
             animation: pingSoft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
@@ -63,140 +85,298 @@
             75%, 100% { transform: scale(2.2); opacity: 0; }
         }
 
+        /* Pulse animation for GPS button */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(245,158,11,0); }
+        }
+        .pulse-glow:hover { animation: pulseGlow 1.5s infinite; }
+
+        /* Commune buttons */
+        .btn-comuna {
+            transition: all 0.15s ease;
+            font-size: 11px;
+        }
+        .btn-comuna:hover {
+            background: #f59e0b;
+            color: #0f172a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+        }
+        .btn-comuna.active {
+            background: #f59e0b;
+            color: #0f172a;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+        }
+
+        /* Map */
         #map {
-            height: 220px;
+            height: 230px;
             border-radius: 1rem;
             z-index: 5;
         }
+
+        /* Result card animation */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .slide-up { animation: slideUp 0.3s ease forwards; }
+
+        /* Metric cards */
+        .metric-card {
+            border-radius: 1rem;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            transition: transform 0.15s;
+        }
+        .metric-card:hover { transform: translateY(-2px); }
+
+        /* Buttons */
+        .btn-wsp-cliente {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            box-shadow: 0 8px 20px -4px rgba(22,163,74,0.4);
+            transition: all 0.15s;
+        }
+        .btn-wsp-cliente:hover {
+            background: linear-gradient(135deg, #15803d, #166534);
+            box-shadow: 0 12px 24px -4px rgba(22,163,74,0.5);
+            transform: translateY(-1px);
+        }
+        .btn-wsp-cliente:active { transform: translateY(0); }
+
+        .btn-dispatch {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 8px 20px -4px rgba(245,158,11,0.4);
+            transition: all 0.15s;
+        }
+        .btn-dispatch:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            box-shadow: 0 12px 24px -4px rgba(245,158,11,0.5);
+            transform: translateY(-1px);
+        }
+        .btn-dispatch:active { transform: translateY(0); }
+
+        /* Textarea */
+        .msg-textarea {
+            font-family: 'Plus Jakarta Sans', monospace;
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.6;
+            font-size: 11.5px;
+        }
+
+        /* Step badge */
+        .step-badge {
+            width: 22px; height: 22px;
+            border-radius: 8px;
+            background: #f59e0b;
+            color: #0f172a;
+            font-weight: 900;
+            font-size: 11px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* GPS button */
+        .btn-gps {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            transition: all 0.15s;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+        }
+        .btn-gps:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245,158,11,0.4);
+        }
+
+        /* Service radio cards */
+        .servicio-card { transition: all 0.15s ease; cursor: pointer; }
+        .servicio-card:hover { transform: translateY(-1px); }
+        .servicio-card.selected {
+            border-color: #f59e0b !important;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+            box-shadow: 0 4px 16px rgba(245,158,11,0.15);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        /* Loading spinner */
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; display: inline-block; }
+
+        /* Modal */
+        .modal-overlay {
+            backdrop-filter: blur(6px);
+            background: rgba(15,23,42,0.65);
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-amber-100 selection:text-amber-900">
+<body class="antialiased selection:bg-amber-100 selection:text-amber-900">
 
-    <!-- Header Oficial ZeroPinchazo -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <!-- ===================== HEADER ===================== -->
+    <header class="header-gradient sticky top-0 z-40">
         <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow-md shadow-amber-500/20">
-                    <i data-lucide="wrench" class="w-5 h-5 text-slate-950"></i>
+            <div class="flex items-center gap-3">
+                <!-- Logo Icon -->
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+                    <i data-lucide="wrench" class="w-5 h-5 text-slate-900"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-heading font-black text-lg text-slate-900 tracking-tight">ZeroPinchazo</span>
-                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">OFICIAL • 24/7</span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-heading font-black text-lg text-white tracking-tight">ZeroPinchazo</span>
+                        <span class="bg-amber-500/20 text-amber-400 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest border border-amber-500/30">OFICIAL 24/7</span>
                     </div>
-                    <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                        <span class="relative flex h-2 w-2">
+                    <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium mt-0.5">
+                        <span class="relative flex h-1.5 w-1.5">
                             <span class="ping-soft absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                         </span>
-                        <span>Santiago RM • WhatsApp Emergencia: +56 9 9368 1033</span>
+                        <span>Operando en Santiago RM</span>
+                        <span class="text-slate-600">•</span>
+                        <span class="text-amber-400 font-semibold">+56 9 9368 1033</span>
                     </div>
                 </div>
             </div>
-
-            <!-- Botón Ajustes de Tarifas -->
-            <button onclick="toggleModalConfig()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Ajustes de Tarifas">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            <!-- Settings button -->
+            <button onclick="toggleModalConfig()" class="w-9 h-9 rounded-xl flex items-center justify-center transition" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)" title="Ajustes de Tarifas">
+                <i data-lucide="settings" class="w-4 h-4 text-slate-300"></i>
             </button>
         </div>
     </header>
 
-    <!-- Contenedor Principal del Operador -->
-    <main class="max-w-xl w-full mx-auto px-4 py-4 flex-1 flex flex-col gap-3.5">
+    <!-- ===================== MAIN ===================== -->
+    <main class="max-w-xl w-full mx-auto px-4 py-5 flex flex-col gap-4">
 
-        <!-- PASO 1: Posición del Técnico en Terreno (Con las comunas reales de cobertura) -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-4 card-shadow">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
-                        <i data-lucide="truck" class="w-4 h-4"></i>
-                    </div>
+        <!-- ===== PASO 1: POSICION DEL TECNICO ===== -->
+        <div class="glass-card p-4">
+            <!-- Header paso 1 -->
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="step-badge">1</div>
                     <div>
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 1: ¿Dónde anda el técnico ahora?</span>
-                        <span id="labelUbicacionTecnico" class="text-xs font-bold text-slate-900">Santiago Centro</span>
+                        <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest block">Posicion del Tecnico</span>
+                        <span id="labelUbicacionTecnico" class="text-xs font-bold text-slate-800 block leading-tight">Santiago Centro</span>
                     </div>
                 </div>
-                <button onclick="tomarGPSActual()" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-xl transition flex items-center gap-1">
+                <button onclick="tomarGPSActual()" class="btn-gps pulse-glow" id="btnGPS">
                     <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
-                    <span>Mi GPS</span>
+                    Mi GPS
                 </button>
             </div>
 
-            <!-- Comunas de Cobertura Oficial ZeroPinchazo -->
-            <div class="grid grid-cols-4 gap-1.5 pt-1 text-xs">
-                <button onclick="setPosicionTecnico(-33.4372, -70.6345, 'Santiago Centro')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Stgo Centro</button>
-                <button onclick="setPosicionTecnico(-33.4255, -70.6120, 'Providencia')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Providencia</button>
-                <button onclick="setPosicionTecnico(-33.4115, -70.5785, 'Las Condes')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Las Condes</button>
-                <button onclick="setPosicionTecnico(-33.3850, -70.5850, 'Vitacura')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Vitacura</button>
-                <button onclick="setPosicionTecnico(-33.3550, -70.5150, 'Lo Barnechea')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Lo Barnechea</button>
-                <button onclick="setPosicionTecnico(-33.4560, -70.6020, 'Ñuñoa')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Ñuñoa</button>
-                <button onclick="setPosicionTecnico(-33.4450, -70.5350, 'La Reina')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">La Reina</button>
-                <button onclick="setPosicionTecnico(-33.4900, -70.5950, 'Macul')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Macul</button>
-                <button onclick="setPosicionTecnico(-33.4850, -70.5400, 'Peñalolén')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Peñalolén</button>
-                <button onclick="setPosicionTecnico(-33.5130, -70.5980, 'La Florida')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">La Florida</button>
-                <button onclick="setPosicionTecnico(-33.5100, -70.7570, 'Maipú')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Maipú</button>
-                <button onclick="abrirCoordenadasManuales()" class="btn-comuna bg-slate-200 hover:bg-slate-300 text-slate-800 py-1.5 rounded-xl font-semibold transition text-center truncate">+ Manual</button>
+            <!-- Comunas de cobertura -->
+            <div class="grid grid-cols-4 gap-1.5">
+                <button onclick="setPosicionTecnico(-33.4372,-70.6345,'Santiago Centro')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-stgo">Stgo Centro</button>
+                <button onclick="setPosicionTecnico(-33.4255,-70.6120,'Providencia')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-prov">Providencia</button>
+                <button onclick="setPosicionTecnico(-33.4115,-70.5785,'Las Condes')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-lc">Las Condes</button>
+                <button onclick="setPosicionTecnico(-33.3850,-70.5850,'Vitacura')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-vit">Vitacura</button>
+                <button onclick="setPosicionTecnico(-33.3550,-70.5150,'Lo Barnechea')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-lob">Lo Barnechea</button>
+                <button onclick="setPosicionTecnico(-33.4560,-70.6020,'Nunoa')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-nun">Nunoa</button>
+                <button onclick="setPosicionTecnico(-33.4450,-70.5350,'La Reina')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-lr">La Reina</button>
+                <button onclick="setPosicionTecnico(-33.4900,-70.5950,'Macul')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-mac">Macul</button>
+                <button onclick="setPosicionTecnico(-33.4850,-70.5400,'Penalolen')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-pen">Penalolen</button>
+                <button onclick="setPosicionTecnico(-33.5130,-70.5980,'La Florida')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-lfl">La Florida</button>
+                <button onclick="setPosicionTecnico(-33.5100,-70.7570,'Maipu')" class="btn-comuna bg-slate-100 text-slate-700 py-2 rounded-xl font-semibold text-center" id="com-mai">Maipu</button>
+                <button onclick="abrirCoordenadasManuales()" class="btn-comuna bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded-xl font-bold text-center flex items-center justify-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3"></i>Manual
+                </button>
+            </div>
+
+            <!-- Coordenadas actuales mini display -->
+            <div id="coordDisplay" class="mt-2.5 text-[10px] text-slate-400 text-center font-mono bg-slate-50 rounded-xl py-1.5 border border-slate-100">
+                Lat: <span id="dispLat">-33.4372</span> &nbsp;|&nbsp; Lng: <span id="dispLng">-70.6345</span>
             </div>
         </div>
 
-        <!-- PASO 2: Selección de Servicio + Ubicación del Cliente -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 card-shadow space-y-3.5">
-            <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 2: Servicio y Destino</span>
-                <h2 class="font-heading font-black text-lg text-slate-900 leading-tight">
-                    ¿Qué servicio necesita el cliente?
-                </h2>
-                <p class="text-xs text-slate-500">
-                    Servicios oficiales de terreno para Autos, SUV y Camionetas.
-                </p>
+        <!-- ===== PASO 2: SERVICIO + CLIENTE ===== -->
+        <div class="glass-card p-5 space-y-4">
+            <!-- Header paso 2 -->
+            <div class="flex items-start gap-2.5">
+                <div class="step-badge mt-0.5">2</div>
+                <div>
+                    <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest block">Servicio y Destino</span>
+                    <h2 class="font-heading font-black text-base text-slate-900 leading-tight">Que necesita el cliente?</h2>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Autos, SUV y Camionetas en Santiago RM</p>
+                </div>
             </div>
 
-            <!-- Selector de Tipo de Servicio de ZeroPinchazo -->
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <label class="cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition" id="lblServicioVulca">
-                    <input type="radio" name="tipoServicio" value="vulcanizacion" checked onchange="cambiarTipoServicio('vulcanizacion')" class="accent-amber-500">
+            <!-- Selector de servicio -->
+            <div class="grid grid-cols-2 gap-2">
+                <label class="servicio-card selected border-2 border-amber-500 rounded-2xl p-3 flex items-center gap-2.5" id="lblServicioVulca" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)">
+                    <input type="radio" name="tipoServicio" value="vulcanizacion" checked onchange="cambiarTipoServicio('vulcanizacion')" class="accent-amber-500 w-3 h-3">
                     <div>
-                        <span class="font-bold text-slate-900 block leading-none">Vulcanización Móvil</span>
+                        <span class="font-bold text-slate-900 block text-xs leading-none">Vulcanizacion Movil</span>
                         <span class="text-[10px] text-slate-500">Pinchazo / Desmonte / Rueda</span>
                     </div>
                 </label>
-                <label class="cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition" id="lblServicioBateria">
-                    <input type="radio" name="tipoServicio" value="bateria" onchange="cambiarTipoServicio('bateria')" class="accent-amber-500">
+                <label class="servicio-card border-2 border-slate-200 bg-slate-50/50 rounded-2xl p-3 flex items-center gap-2.5" id="lblServicioBateria">
+                    <input type="radio" name="tipoServicio" value="bateria" onchange="cambiarTipoServicio('bateria')" class="accent-amber-500 w-3 h-3">
                     <div>
-                        <span class="font-bold text-slate-900 block leading-none">Auxilio de Batería</span>
+                        <span class="font-bold text-slate-900 block text-xs leading-none">Auxilio Bateria</span>
                         <span class="text-[10px] text-slate-500">Puente / Carga en terreno</span>
                     </div>
                 </label>
             </div>
 
-            <!-- Formulario de Ubicación -->
+            <!-- Formulario -->
             <form onsubmit="ejecutarCotizacion(event)" class="space-y-3">
+                <!-- Direccion cliente -->
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
                     </div>
-                    <input 
-                        type="text" 
-                        id="inputDireccionCliente" 
-                        placeholder="Dirección, cruce o coordenadas del cliente..." 
+                    <input
+                        type="text"
+                        id="inputDireccionCliente"
+                        placeholder="Direccion, cruce o coordenadas del cliente..."
                         value="Av. Providencia 1234, Santiago"
-                        class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-2xl py-3 pl-10 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 transition"
+                        class="w-full border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-2xl py-3 pl-10 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none transition"
+                        style="background:#f8fafc"
                     >
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">WhatsApp Cliente (Opcional):</label>
-                        <input 
-                            type="text" 
-                            id="inputTelefonoCliente" 
-                            placeholder="+569..." 
-                            class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 rounded-xl py-2 px-3 text-xs font-semibold text-slate-800 transition"
-                        >
+                <!-- Accesos rapidos -->
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="text-[10px] text-slate-400 font-semibold w-full">Accesos rapidos:</span>
+                    <button type="button" onclick="setDireccionRapida('Plaza Italia, Santiago')" class="text-[10px] font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-600 px-2.5 py-1 rounded-full transition">Plaza Italia</button>
+                    <button type="button" onclick="setDireccionRapida('La Florida, Santiago')" class="text-[10px] font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-600 px-2.5 py-1 rounded-full transition">La Florida</button>
+                    <button type="button" onclick="setDireccionRapida('Las Condes, Santiago')" class="text-[10px] font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-600 px-2.5 py-1 rounded-full transition">Las Condes</button>
+                    <button type="button" onclick="setDireccionRapida('Maipu, Santiago')" class="text-[10px] font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-600 px-2.5 py-1 rounded-full transition">Maipu</button>
+                </div>
+
+                <!-- Fila: telefono + calcular -->
+                <div class="grid grid-cols-5 gap-2">
+                    <div class="col-span-2">
+                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">WhatsApp Cliente:</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                                <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
+                            </div>
+                            <input
+                                type="text"
+                                id="inputTelefonoCliente"
+                                placeholder="+569..."
+                                class="w-full border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 rounded-xl py-2 pl-7 pr-2 text-[11px] font-semibold text-slate-800 outline-none transition"
+                                style="background:#f8fafc"
+                            >
+                        </div>
                     </div>
-                    <div class="flex items-end">
-                        <button type="submit" id="btnCalcular" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 text-xs shadow-md transition active:scale-[0.98]">
-                            <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
+                    <div class="col-span-3 flex items-end">
+                        <button type="submit" id="btnCalcular" class="w-full font-black py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs transition active:scale-[0.98] text-white" style="background:linear-gradient(135deg,#0f172a,#1e293b);box-shadow:0 8px 20px -4px rgba(0,0,0,0.3)">
+                            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
                             <span>Calcular Presupuesto</span>
                         </button>
                     </div>
@@ -204,183 +384,210 @@
             </form>
         </div>
 
-        <!-- PASO 3: Presupuesto + Despacho WhatsApp Oficial -->
-        <div id="cardResultado" class="hidden bg-white border-2 border-emerald-500/30 rounded-3xl p-5 card-shadow space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-200">
-            
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                        ✓
-                    </span>
-                    <h3 class="font-heading font-black text-sm text-slate-900 uppercase tracking-wide">
-                        Presupuesto ZeroPinchazo
-                    </h3>
+        <!-- ===== PASO 3: RESULTADO (OCULTO HASTA CALCULAR) ===== -->
+        <div id="cardResultado" class="hidden glass-card-result p-5 space-y-4 slide-up">
+
+            <!-- Header resultado -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                    </div>
+                    <div>
+                        <span class="text-[9px] uppercase font-bold text-slate-400 tracking-widest block">Cotizacion ZeroPinchazo</span>
+                        <span class="font-heading font-black text-sm text-slate-900">Presupuesto Calculado</span>
+                    </div>
                 </div>
-                <span id="labelServicioSeleccionado" class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
-                    Vulcanización Móvil
+                <span id="labelServicioSeleccionado" class="text-[10px] font-black text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200">
+                    Vulcanizacion Movil
                 </span>
             </div>
 
-            <!-- Métricas Clave -->
-            <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Distancia</span>
-                    <span id="resKm" class="font-heading text-lg font-black text-slate-900">0.0 km</span>
+            <!-- Metricas clave -->
+            <div class="grid grid-cols-3 gap-2">
+                <div class="metric-card border border-slate-100" style="background:linear-gradient(135deg,#f8fafc,#f1f5f9)">
+                    <i data-lucide="route" class="w-4 h-4 text-slate-400 mx-auto mb-1"></i>
+                    <span class="text-[9px] uppercase font-bold text-slate-400 block">Distancia</span>
+                    <span id="resKm" class="font-heading text-xl font-black text-slate-900">0.0 km</span>
                 </div>
-                <div class="bg-amber-50 border border-amber-100 rounded-2xl p-2.5">
-                    <span class="text-[10px] uppercase font-bold text-amber-700 block mb-0.5">Llegada</span>
-                    <span id="resMin" class="font-heading text-lg font-black text-amber-700">~0 min</span>
+                <div class="metric-card border border-amber-100" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)">
+                    <i data-lucide="clock" class="w-4 h-4 text-amber-500 mx-auto mb-1"></i>
+                    <span class="text-[9px] uppercase font-bold text-amber-600 block">Llegada</span>
+                    <span id="resMin" class="font-heading text-xl font-black text-amber-700">~0 min</span>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-2.5">
-                    <span class="text-[10px] uppercase font-bold text-emerald-700 block mb-0.5">Presupuesto</span>
-                    <span id="resPrecio" class="font-heading text-lg font-black text-emerald-700">$0</span>
+                <div class="metric-card border border-emerald-100" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-500 mx-auto mb-1"></i>
+                    <span class="text-[9px] uppercase font-bold text-emerald-600 block">Precio</span>
+                    <span id="resPrecio" class="font-heading text-xl font-black text-emerald-700">$0</span>
                 </div>
             </div>
 
-            <!-- Desglose de Tarifas -->
-            <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 text-xs space-y-1.5">
-                <div class="flex justify-between text-slate-600">
-                    <span id="txtLabelBase">Salida y diagnóstico técnico:</span>
-                    <span id="desgloseBase" class="font-bold text-slate-800">$15.000</span>
+            <!-- Desglose de tarifa -->
+            <div class="rounded-2xl p-3.5 border border-slate-200/80 text-xs space-y-2" style="background:#f8fafc">
+                <div class="flex justify-between items-center text-slate-600">
+                    <span class="flex items-center gap-1.5">
+                        <i data-lucide="wrench" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span id="txtLabelBase">Salida y diagnostico tecnico:</span>
+                    </span>
+                    <span id="desgloseBase" class="font-bold text-slate-800 tabular-nums">$15.000</span>
                 </div>
-                <div class="flex justify-between text-slate-600">
-                    <span>Desplazamiento (<span id="desgloseKmExtra">0 km</span> extras):</span>
-                    <span id="desgloseKmCosto" class="font-bold text-slate-800">$0</span>
+                <div class="flex justify-between items-center text-slate-600">
+                    <span class="flex items-center gap-1.5">
+                        <i data-lucide="map" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span>Desplazamiento (<span id="desgloseKmExtra">0 km</span> extras):</span>
+                    </span>
+                    <span id="desgloseKmCosto" class="font-bold text-slate-800 tabular-nums">$0</span>
                 </div>
-                <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center text-slate-900 font-bold">
-                    <span>Total Estimado (CLP):</span>
-                    <span id="desgloseTotalFinal" class="text-sm font-black text-emerald-600">$18.000</span>
+                <div class="border-t border-slate-200 pt-2 flex justify-between items-center">
+                    <span class="font-bold text-slate-900">Total Estimado:</span>
+                    <span id="desgloseTotalFinal" class="text-sm font-black text-emerald-600 tabular-nums">$18.000</span>
                 </div>
-                <div class="text-[10px] text-slate-400 text-center italic">
+                <div class="text-[10px] text-slate-400 text-center bg-white rounded-xl py-1.5 border border-slate-100">
                     Rango estimado: <span id="desgloseRango" class="text-slate-600 font-semibold">$16.500 a $20.000</span>
                 </div>
             </div>
 
-            <!-- Mapa Visual de Ruta -->
+            <!-- Mapa de ruta -->
             <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                 <div id="map"></div>
             </div>
 
-            <!-- CAJA DE MENSAJE LISTO PARA EL CLIENTE -->
-            <div class="space-y-2 pt-1 border-t border-slate-100">
+            <!-- Mensaje para el cliente -->
+            <div class="space-y-2.5 pt-1 border-t border-slate-100">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i>
-                        Mensaje para enviar al Cliente:
+                        <i data-lucide="message-square" class="w-4 h-4 text-emerald-500"></i>
+                        Mensaje para el Cliente:
                     </span>
-                    <button onclick="copiarMensajeCliente()" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-xl transition flex items-center gap-1">
+                    <button onclick="copiarMensajeCliente()" class="text-[11px] font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-xl transition flex items-center gap-1.5 active:scale-95">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         <span id="btnCopiarTexto">Copiar Texto</span>
                     </button>
                 </div>
 
-                <!-- Textarea con el mensaje comercial ya armado -->
-                <textarea 
-                    id="txtMensajeCliente" 
-                    rows="6" 
-                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-medium text-slate-800 leading-relaxed outline-none focus:bg-white focus:border-emerald-500"
+                <!-- Textarea editable con el mensaje -->
+                <textarea
+                    id="txtMensajeCliente"
+                    rows="8"
+                    class="msg-textarea w-full border border-slate-200 rounded-2xl p-3.5 text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition"
+                    style="background:#f8fafc"
                 ></textarea>
 
-                <!-- BOTONES DE ACCIÓN PARA EL OPERADOR -->
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <!-- Enviar por WhatsApp al Cliente -->
-                    <a id="btnEnviarClienteWsp" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs btn-green-shadow transition text-center">
+                <!-- Botones de accion -->
+                <div class="grid grid-cols-2 gap-2.5 pt-0.5">
+                    <!-- Enviar al cliente -->
+                    <button id="btnEnviarClienteWsp" onclick="enviarWhatsAppCliente(event)" class="btn-wsp-cliente text-white font-black py-3.5 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs active:scale-[0.98]">
                         <i data-lucide="send" class="w-4 h-4"></i>
                         <span>Enviar al Cliente</span>
-                    </a>
+                    </button>
 
-                    <!-- Enviar orden de despacho al Técnico -->
-                    <a id="btnDespacharTecnicoWsp" href="#" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md transition text-center">
+                    <!-- Despachar tecnico -->
+                    <a id="btnDespacharTecnicoWsp" href="#" target="_blank" class="btn-dispatch text-slate-900 font-black py-3.5 px-3 rounded-2xl flex items-center justify-center gap-2 text-xs active:scale-[0.98]">
                         <i data-lucide="navigation" class="w-4 h-4"></i>
-                        <span>Despachar Técnico</span>
+                        <span>Despachar Tecnico</span>
                     </a>
                 </div>
             </div>
-
         </div>
 
     </main>
 
-    <!-- Footer Oficial -->
-    <footer class="py-3 text-center text-slate-400 text-xs border-t border-slate-200 bg-white">
-        <p class="font-medium text-slate-600">ZeroPinchazo® • Vulcanización Móvil y Auxilio de Baterías</p>
-        <p class="text-[11px] text-slate-400 mt-0.5">Santiago de Chile • www.zeropinchazo.cl • +56 9 9368 1033</p>
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="py-4 text-center text-slate-500 text-xs border-t border-slate-800/50 mt-2">
+        <p class="font-semibold text-slate-400">ZeroPinchazo® • Vulcanizacion Movil y Auxilio de Baterias</p>
+        <p class="text-[11px] text-slate-600 mt-0.5">Santiago de Chile • zeropinchazo.cl • +56 9 9368 1033</p>
     </footer>
 
-    <!-- Modal Ajuste de Tarifas y WhatsApp Oficial -->
-    <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- ===================== MODAL AJUSTES ===================== -->
+    <div id="modalConfig" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl border border-slate-100">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h4 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2">
-                    <i data-lucide="sliders" class="w-4 h-4 text-amber-500"></i> Ajustes ZeroPinchazo
+                    <i data-lucide="settings" class="w-4 h-4 text-amber-500"></i>
+                    Ajustes ZeroPinchazo
                 </h4>
-                <button onclick="toggleModalConfig()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+                <button onclick="toggleModalConfig()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
-            <div class="space-y-3 text-xs">
+            <div class="space-y-4 text-xs">
+                <!-- WhatsApp tecnico -->
                 <div>
-                    <label class="text-slate-600 font-bold block mb-1">WhatsApp del Técnico (para despacharle ruta):</label>
-                    <input type="text" id="cfgWhatsappTecnico" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="+56993681033">
+                    <label class="text-slate-700 font-bold block mb-1.5 flex items-center gap-1.5">
+                        <i data-lucide="phone" class="w-3.5 h-3.5 text-amber-500"></i>
+                        WhatsApp del Tecnico (despacho):
+                    </label>
+                    <input type="text" id="cfgWhatsappTecnico" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 rounded-xl px-3 py-2 text-slate-800 font-semibold outline-none transition" value="+56993681033">
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-slate-500 block mb-0.5">Cargo Base (Salida):</label>
-                        <input type="number" id="cfgBase" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="15000">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5">Precio por Km Extra:</label>
-                        <input type="number" id="cfgPrecioKm" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="1200">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5">Km Incluidos:</label>
-                        <input type="number" id="cfgKmInc" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="3">
-                    </div>
-                    <div>
-                        <label class="text-slate-500 block mb-0.5">Cobro Mínimo:</label>
-                        <input type="number" id="cfgMinimo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="18000">
+                <!-- Tarifas -->
+                <div>
+                    <label class="text-slate-700 font-bold block mb-2 flex items-center gap-1.5">
+                        <i data-lucide="dollar-sign" class="w-3.5 h-3.5 text-amber-500"></i>
+                        Configuracion de Tarifas:
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-slate-500 block mb-1 text-[10px] uppercase font-bold tracking-wider">Cargo Base ($):</label>
+                            <input type="number" id="cfgBase" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold outline-none" value="15000">
+                        </div>
+                        <div>
+                            <label class="text-slate-500 block mb-1 text-[10px] uppercase font-bold tracking-wider">Precio por Km ($):</label>
+                            <input type="number" id="cfgPrecioKm" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold outline-none" value="1200">
+                        </div>
+                        <div>
+                            <label class="text-slate-500 block mb-1 text-[10px] uppercase font-bold tracking-wider">Km Incluidos:</label>
+                            <input type="number" id="cfgKmInc" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold outline-none" value="3">
+                        </div>
+                        <div>
+                            <label class="text-slate-500 block mb-1 text-[10px] uppercase font-bold tracking-wider">Cobro Minimo ($):</label>
+                            <input type="number" id="cfgMinimo" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold outline-none" value="18000">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <button onclick="guardarAjustes()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-2xl text-xs transition">
+            <button onclick="guardarAjustes()" class="w-full font-black py-3 rounded-2xl text-sm transition active:scale-[0.98] text-slate-900" style="background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 8px 20px -4px rgba(245,158,11,0.4)">
                 Guardar Ajustes
             </button>
         </div>
     </div>
 
-    <!-- Modal Coordenadas Manuales del Técnico -->
-    <div id="modalCoordenadas" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-5 max-w-xs w-full space-y-3 shadow-2xl border border-slate-100">
+    <!-- ===================== MODAL COORDENADAS ===================== -->
+    <div id="modalCoordenadas" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-5 max-w-xs w-full space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h4 class="font-heading font-bold text-sm text-slate-900">Coordenadas del Técnico</h4>
-                <button onclick="toggleModalCoordenadas()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4"></i>
+                <h4 class="font-heading font-bold text-sm text-slate-900 flex items-center gap-2">
+                    <i data-lucide="crosshair" class="w-4 h-4 text-amber-500"></i>
+                    Coordenadas del Tecnico
+                </h4>
+                <button onclick="toggleModalCoordenadas()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
-            <div class="space-y-2 text-xs">
+            <div class="space-y-2.5 text-xs">
                 <div>
-                    <label class="text-slate-500 block mb-0.5">Latitud</label>
-                    <input type="number" step="0.0001" id="inputManualLat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-bold" value="-33.4372">
+                    <label class="text-slate-500 block mb-1 font-semibold">Latitud:</label>
+                    <input type="number" step="0.0001" id="inputManualLat" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-3 py-2 text-slate-800 font-bold outline-none" value="-33.4372">
                 </div>
                 <div>
-                    <label class="text-slate-500 block mb-0.5">Longitud</label>
-                    <input type="number" step="0.0001" id="inputManualLng" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-bold" value="-70.6345">
+                    <label class="text-slate-500 block mb-1 font-semibold">Longitud:</label>
+                    <input type="number" step="0.0001" id="inputManualLng" class="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl px-3 py-2 text-slate-800 font-bold outline-none" value="-70.6345">
                 </div>
             </div>
-            <button onclick="guardarCoordenadasManuales()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-xl text-xs transition">
-                Fijar Posición
+            <button onclick="guardarCoordenadasManuales()" class="w-full text-slate-900 font-bold py-2.5 rounded-xl text-xs transition active:scale-[0.98]" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+                Fijar Posicion del Tecnico
             </button>
         </div>
     </div>
 
-    <!-- Lógica de Operador ZeroPinchazo -->
+    <!-- ===================== JAVASCRIPT ===================== -->
     <script>
         lucide.createIcons();
 
-        const APP = {
+        // ---- Estado global de la aplicacion ----
+        var APP = {
             servicioActual: 'vulcanizacion',
             tecnico: {
                 lat: parseFloat(localStorage.getItem('zp_lat')) || -33.4372,
@@ -388,10 +595,10 @@
                 nombre: localStorage.getItem('zp_nombre') || 'Santiago Centro'
             },
             tarifas: {
-                cargoBase: parseInt(localStorage.getItem('zp_base')) || 15000,
-                precioKm: parseInt(localStorage.getItem('zp_km')) || 1200,
-                kmIncluidos: parseInt(localStorage.getItem('zp_kminc')) || 3,
-                minimo: parseInt(localStorage.getItem('zp_min')) || 18000,
+                cargoBase:    parseInt(localStorage.getItem('zp_base'))   || 15000,
+                precioKm:     parseInt(localStorage.getItem('zp_km'))     || 1200,
+                kmIncluidos:  parseInt(localStorage.getItem('zp_kminc'))  || 3,
+                minimo:       parseInt(localStorage.getItem('zp_min'))    || 18000,
                 redondeo: 500,
                 margen: 0.10,
                 whatsappTecnico: localStorage.getItem('zp_wsp_tec') || '+56993681033'
@@ -401,12 +608,22 @@
             layers: []
         };
 
+        // ---- Utilidades ----
         function formatoCLP(val) {
             return '$' + Math.round(val).toLocaleString('es-CL');
         }
 
+        // ---- Modales ----
         function toggleModalConfig() {
-            document.getElementById('modalConfig').classList.toggle('hidden');
+            var m = document.getElementById('modalConfig');
+            m.classList.toggle('hidden');
+            if (!m.classList.contains('hidden')) {
+                document.getElementById('cfgBase').value = APP.tarifas.cargoBase;
+                document.getElementById('cfgPrecioKm').value = APP.tarifas.precioKm;
+                document.getElementById('cfgKmInc').value = APP.tarifas.kmIncluidos;
+                document.getElementById('cfgMinimo').value = APP.tarifas.minimo;
+                document.getElementById('cfgWhatsappTecnico').value = APP.tarifas.whatsappTecnico;
+            }
         }
 
         function toggleModalCoordenadas() {
@@ -414,29 +631,37 @@
         }
 
         function abrirCoordenadasManuales() {
+            document.getElementById('inputManualLat').value = APP.tecnico.lat;
+            document.getElementById('inputManualLng').value = APP.tecnico.lng;
             toggleModalCoordenadas();
         }
 
+        // ---- Cambiar tipo de servicio ----
         function cambiarTipoServicio(tipo) {
             APP.servicioActual = tipo;
-            const lblVulca = document.getElementById('lblServicioVulca');
-            const lblBateria = document.getElementById('lblServicioBateria');
-            
+            var lblVulca  = document.getElementById('lblServicioVulca');
+            var lblBateria = document.getElementById('lblServicioBateria');
+
             if (tipo === 'vulcanizacion') {
-                lblVulca.className = "cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
-                lblBateria.className = "cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
-                document.getElementById('labelServicioSeleccionado').innerText = "Vulcanización Móvil";
-                document.getElementById('txtLabelBase').innerText = "Salida y diagnóstico técnico:";
+                lblVulca.className = 'servicio-card selected border-2 border-amber-500 rounded-2xl p-3 flex items-center gap-2.5';
+                lblVulca.style.background = 'linear-gradient(135deg,#fffbeb,#fef3c7)';
+                lblBateria.className = 'servicio-card border-2 border-slate-200 bg-slate-50/50 rounded-2xl p-3 flex items-center gap-2.5';
+                lblBateria.style.background = '';
+                document.getElementById('labelServicioSeleccionado').innerText = 'Vulcanizacion Movil';
+                document.getElementById('txtLabelBase').innerText = 'Salida y diagnostico tecnico:';
             } else {
-                lblBateria.className = "cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
-                lblVulca.className = "cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
-                document.getElementById('labelServicioSeleccionado').innerText = "Auxilio de Batería";
-                document.getElementById('txtLabelBase').innerText = "Salida y puente de batería in situ:";
+                lblBateria.className = 'servicio-card selected border-2 border-amber-500 rounded-2xl p-3 flex items-center gap-2.5';
+                lblBateria.style.background = 'linear-gradient(135deg,#fffbeb,#fef3c7)';
+                lblVulca.className = 'servicio-card border-2 border-slate-200 bg-slate-50/50 rounded-2xl p-3 flex items-center gap-2.5';
+                lblVulca.style.background = '';
+                document.getElementById('labelServicioSeleccionado').innerText = 'Auxilio Bateria';
+                document.getElementById('txtLabelBase').innerText = 'Salida y puente de bateria in situ:';
             }
 
             if (APP.cliente) recalcularCotizacion();
         }
 
+        // ---- Posicion del Tecnico ----
         function setPosicionTecnico(lat, lng, nombre) {
             APP.tecnico.lat = lat;
             APP.tecnico.lng = lng;
@@ -454,35 +679,52 @@
         }
 
         function tomarGPSActual() {
-            if (!navigator.geolocation) return alert('Navegador no soporta GPS.');
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta GPS.');
+                return;
+            }
+            var btn = document.getElementById('btnGPS');
+            btn.innerHTML = '<span class="spin">&#8635;</span> Obteniendo...';
+            btn.disabled = true;
+
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    setPosicionTecnico(pos.coords.latitude, pos.coords.longitude, 'Mi GPS Actual 📍');
+                function(pos) {
+                    setPosicionTecnico(pos.coords.latitude, pos.coords.longitude, 'GPS Actual');
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg> Mi GPS';
+                    btn.disabled = false;
+                    lucide.createIcons();
                 },
-                (err) => alert('No se pudo obtener el GPS.'),
-                { enableHighAccuracy: true, timeout: 6000 }
+                function(err) {
+                    alert('No se pudo obtener el GPS. Verifica los permisos del navegador.');
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg> Mi GPS';
+                    btn.disabled = false;
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
             );
         }
 
         function guardarCoordenadasManuales() {
-            const lat = parseFloat(document.getElementById('inputManualLat').value);
-            const lng = parseFloat(document.getElementById('inputManualLng').value);
-            if (isNaN(lat) || isNaN(lng)) return alert('Coordenadas inválidas');
-            setPosicionTecnico(lat, lng, `Manual (${lat.toFixed(3)}, ${lng.toFixed(3)})`);
+            var lat = parseFloat(document.getElementById('inputManualLat').value);
+            var lng = parseFloat(document.getElementById('inputManualLng').value);
+            if (isNaN(lat) || isNaN(lng)) {
+                alert('Coordenadas invalidas. Revisa los valores ingresados.');
+                return;
+            }
+            setPosicionTecnico(lat, lng, 'Manual (' + lat.toFixed(3) + ', ' + lng.toFixed(3) + ')');
             toggleModalCoordenadas();
         }
 
         function guardarAjustes() {
-            APP.tarifas.cargoBase = parseInt(document.getElementById('cfgBase').value) || 15000;
-            APP.tarifas.precioKm = parseInt(document.getElementById('cfgPrecioKm').value) || 1200;
-            APP.tarifas.kmIncluidos = parseInt(document.getElementById('cfgKmInc').value) || 3;
-            APP.tarifas.minimo = parseInt(document.getElementById('cfgMinimo').value) || 18000;
+            APP.tarifas.cargoBase   = parseInt(document.getElementById('cfgBase').value)       || 15000;
+            APP.tarifas.precioKm    = parseInt(document.getElementById('cfgPrecioKm').value)   || 1200;
+            APP.tarifas.kmIncluidos = parseInt(document.getElementById('cfgKmInc').value)      || 3;
+            APP.tarifas.minimo      = parseInt(document.getElementById('cfgMinimo').value)     || 18000;
             APP.tarifas.whatsappTecnico = document.getElementById('cfgWhatsappTecnico').value.trim() || '+56993681033';
 
-            localStorage.setItem('zp_base', APP.tarifas.cargoBase);
-            localStorage.setItem('zp_km', APP.tarifas.precioKm);
-            localStorage.setItem('zp_kminc', APP.tarifas.kmIncluidos);
-            localStorage.setItem('zp_min', APP.tarifas.minimo);
+            localStorage.setItem('zp_base',    APP.tarifas.cargoBase);
+            localStorage.setItem('zp_km',      APP.tarifas.precioKm);
+            localStorage.setItem('zp_kminc',   APP.tarifas.kmIncluidos);
+            localStorage.setItem('zp_min',     APP.tarifas.minimo);
             localStorage.setItem('zp_wsp_tec', APP.tarifas.whatsappTecnico);
 
             toggleModalConfig();
@@ -490,34 +732,46 @@
         }
 
         function actualizarEtiquetaTecnico() {
-            document.getElementById('labelUbicacionTecnico').innerText = 
-                `${APP.tecnico.nombre} (${APP.tecnico.lat.toFixed(3)}, ${APP.tecnico.lng.toFixed(3)})`;
+            document.getElementById('labelUbicacionTecnico').innerText =
+                APP.tecnico.nombre + ' (' + APP.tecnico.lat.toFixed(4) + ', ' + APP.tecnico.lng.toFixed(4) + ')';
+            document.getElementById('dispLat').innerText = APP.tecnico.lat.toFixed(5);
+            document.getElementById('dispLng').innerText = APP.tecnico.lng.toFixed(5);
         }
 
+        // ---- Accesos rapidos de direccion ----
+        function setDireccionRapida(dir) {
+            document.getElementById('inputDireccionCliente').value = dir;
+            ejecutarCotizacion(null);
+        }
+
+        // ---- Cotizacion principal ----
         async function ejecutarCotizacion(e) {
             if (e) e.preventDefault();
-            const query = document.getElementById('inputDireccionCliente').value.trim();
+            var query = document.getElementById('inputDireccionCliente').value.trim();
             if (!query) return;
 
-            const btn = document.getElementById('btnCalcular');
+            var btn = document.getElementById('btnCalcular');
             btn.disabled = true;
-            btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Buscando...`;
+            btn.innerHTML = '<span class="spin" style="display:inline-block">&#8635;</span>&nbsp; Calculando...';
 
             try {
-                const coordMatch = query.match(/(-?\d+\.\d+)[,\s]+(-?\d+\.\d+)/);
+                var coordMatch = query.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
                 if (coordMatch) {
                     APP.cliente = {
                         lat: parseFloat(coordMatch[1]),
                         lng: parseFloat(coordMatch[2]),
-                        direccion: `Ubicación GPS (${coordMatch[1]}, ${coordMatch[2]})`
+                        direccion: 'Ubicacion GPS (' + coordMatch[1] + ', ' + coordMatch[2] + ')'
                     };
                     await recalcularCotizacion();
                 } else {
-                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=cl&q=${encodeURIComponent(query)}&limit=1`);
-                    const data = await resp.json();
+                    var resp = await fetch(
+                        'https://nominatim.openstreetmap.org/search?format=json&countrycodes=cl&q=' +
+                        encodeURIComponent(query) + '&limit=1'
+                    );
+                    var data = await resp.json();
 
                     if (data && data.length > 0) {
-                        const r = data[0];
+                        var r = data[0];
                         APP.cliente = {
                             lat: parseFloat(r.lat),
                             lng: parseFloat(r.lon),
@@ -525,197 +779,226 @@
                         };
                         await recalcularCotizacion();
                     } else {
-                        alert('No se encontró esa dirección. Intenta agregar la comuna (ej: Santiago Centro, Providencia, Las Condes, Maipú).');
+                        alert('No se encontro esa direccion. Intenta agregar la comuna (ej: Providencia, Las Condes, Maipu).');
                     }
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error al calcular la ruta.');
+                alert('Error al calcular la ruta. Verifica tu conexion a internet.');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i><span>Calcular Presupuesto</span>`;
+                btn.innerHTML = '<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i><span>Calcular Presupuesto</span>';
                 lucide.createIcons();
             }
         }
 
+        // ---- Recalculo de cotizacion ----
         async function recalcularCotizacion() {
             if (!APP.cliente) return;
 
-            const tLat = APP.tecnico.lat;
-            const tLng = APP.tecnico.lng;
-            const cLat = APP.cliente.lat;
-            const cLng = APP.cliente.lng;
+            var tLat = APP.tecnico.lat;
+            var tLng = APP.tecnico.lng;
+            var cLat = APP.cliente.lat;
+            var cLng = APP.cliente.lng;
 
-            let km = 0;
-            let minutos = 0;
+            var km = 0;
+            var minutos = 0;
 
             try {
-                const url = `https://router.project-osrm.org/route/v1/driving/${tLng},${tLat};${cLng},${cLat}?overview=full&geometries=geojson`;
-                const res = await fetch(url);
-                const data = await res.json();
+                var url = 'https://router.project-osrm.org/route/v1/driving/' +
+                    tLng + ',' + tLat + ';' + cLng + ',' + cLat +
+                    '?overview=full&geometries=geojson';
+                var res = await fetch(url);
+                var data = await res.json();
 
                 if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-                    const ruta = data.routes[0];
+                    var ruta = data.routes[0];
                     km = ruta.distance / 1000.0;
                     minutos = Math.max(5, Math.ceil((ruta.duration * 1.15) / 60));
                     dibujarMapa(ruta.geometry);
                 } else {
-                    throw new Error('OSRM error');
+                    throw new Error('OSRM sin resultado');
                 }
             } catch (err) {
-                const dLat = (cLat - tLat) * Math.PI / 180;
-                const dLon = (cLng - tLng) * Math.PI / 180;
-                const a = Math.sin(dLat/2)**2 + Math.cos(tLat * Math.PI / 180) * Math.cos(cLat * Math.PI / 180) * Math.sin(dLon/2)**2;
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                // Fallback: calculo haversine
+                var dLat = (cLat - tLat) * Math.PI / 180;
+                var dLon = (cLng - tLng) * Math.PI / 180;
+                var a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+                        Math.cos(tLat * Math.PI / 180) * Math.cos(cLat * Math.PI / 180) *
+                        Math.sin(dLon/2)*Math.sin(dLon/2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                 km = 6371 * c * 1.35;
                 minutos = Math.max(8, Math.ceil((km / 30) * 60));
                 dibujarMapa(null);
             }
 
-            // Tarifas
-            const kmExtra = Math.max(0, km - APP.tarifas.kmIncluidos);
-            const costoKm = kmExtra * APP.tarifas.precioKm;
-            const subtotal = Math.max(APP.tarifas.cargoBase + costoKm, APP.tarifas.minimo);
-            const paso = APP.tarifas.redondeo;
-            const estimado = Math.ceil(subtotal / paso) * paso;
-            const minimo = Math.ceil((subtotal * (1 - APP.tarifas.margen)) / paso) * paso;
-            const maximo = Math.ceil((subtotal * (1 + APP.tarifas.margen)) / paso) * paso;
+            // Calculo de tarifas
+            var kmExtra  = Math.max(0, km - APP.tarifas.kmIncluidos);
+            var costoKm  = kmExtra * APP.tarifas.precioKm;
+            var subtotal = Math.max(APP.tarifas.cargoBase + costoKm, APP.tarifas.minimo);
+            var paso     = APP.tarifas.redondeo;
+            var estimado = Math.ceil(subtotal / paso) * paso;
+            var minimo   = Math.ceil((subtotal * (1 - APP.tarifas.margen)) / paso) * paso;
+            var maximo   = Math.ceil((subtotal * (1 + APP.tarifas.margen)) / paso) * paso;
 
-            // Renderizado Métricas
-            document.getElementById('resKm').innerText = `${km.toFixed(1)} km`;
-            document.getElementById('resMin').innerText = `~${minutos} min`;
+            // Renderizar metricas
+            document.getElementById('resKm').innerText    = km.toFixed(1) + ' km';
+            document.getElementById('resMin').innerText   = '~' + minutos + ' min';
             document.getElementById('resPrecio').innerText = formatoCLP(estimado);
 
-            document.getElementById('desgloseBase').innerText = formatoCLP(APP.tarifas.cargoBase);
-            document.getElementById('desgloseKmExtra').innerText = `${kmExtra.toFixed(1)} km`;
-            document.getElementById('desgloseKmCosto').innerText = formatoCLP(costoKm);
+            document.getElementById('desgloseBase').innerText      = formatoCLP(APP.tarifas.cargoBase);
+            document.getElementById('desgloseKmExtra').innerText   = kmExtra.toFixed(1) + ' km';
+            document.getElementById('desgloseKmCosto').innerText   = formatoCLP(costoKm);
             document.getElementById('desgloseTotalFinal').innerText = formatoCLP(estimado);
-            document.getElementById('desgloseRango').innerText = `${formatoCLP(minimo)} a ${formatoCLP(maximo)}`;
+            document.getElementById('desgloseRango').innerText     = formatoCLP(minimo) + ' a ' + formatoCLP(maximo);
 
-            const nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanización Móvil' : 'Auxilio de Batería';
+            var nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanizacion Movil' : 'Auxilio de Bateria';
 
-                                    // Formateo del mensaje con saltos de línea reales y caracteres limpios
-            const lineas = [
-                "¡Hola! Gracias por comunicarte con ZeroPinchazo",
-                "----------------------------------------",
-                "RESUMEN DE COTIZACION EN RUTA",
-                "----------------------------------------",
-                "",
-                "• Servicio: " + nombreServicio,
-                "• Ubicacion: " + APP.cliente.direccion,
-                "• Distancia del movil: " + km.toFixed(1) + " km",
-                "• Tiempo de llegada: ~" + minutos + " minutos",
-                "",
-                "VALOR ESTIMADO:",
-                "> " + formatoCLP(estimado) + " CLP (Rango: " + formatoCLP(minimo) + " a " + formatoCLP(maximo) + ")",
-                "",
-                "DETALLES:",
-                "- Atencion tecnica en terreno para Autos, SUV y Camionetas",
-                "- Medios de pago: Transferencia, Efectivo y Tarjetas Redcompra/Credito",
-                "",
-                "¿Deseas confirmar el envio del movil?",
-                "Por favor responde SI para despachar al tecnico."
+            // ---- Mensaje para el CLIENTE (sin asteriscos, sin emojis problematicos) ----
+            var lineas = [
+                'Hola! Gracias por comunicarte con ZeroPinchazo',
+                '----------------------------------------',
+                'RESUMEN DE COTIZACION EN RUTA',
+                '----------------------------------------',
+                '',
+                'Servicio: ' + nombreServicio,
+                'Ubicacion: ' + APP.cliente.direccion,
+                'Distancia del movil: ' + km.toFixed(1) + ' km',
+                'Tiempo de llegada: ~' + minutos + ' minutos',
+                '',
+                'VALOR ESTIMADO:',
+                formatoCLP(estimado) + ' CLP',
+                '(Rango: ' + formatoCLP(minimo) + ' a ' + formatoCLP(maximo) + ')',
+                '',
+                'DETALLES DEL SERVICIO:',
+                '- Atencion tecnica en terreno para Autos, SUV y Camionetas',
+                '- Medios de pago: Transferencia, Efectivo y Tarjetas',
+                '',
+                'Confirmas el envio del movil a tu ubicacion?',
+                'Responde SI para despachar al tecnico de inmediato.'
             ];
-
-            const mensajeParaCliente = lineas.join("
-");
+            var mensajeParaCliente = lineas.join('\n');
             document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
 
-            // Función de envío dinámico que toma cualquier edición hecha en el textarea
-            window.enviarWhatsAppCliente = function(e) {
-                if (e) e.preventDefault();
-                const textoFinal = document.getElementById('txtMensajeCliente').value;
-                const telInput = document.getElementById('inputTelefonoCliente').value.trim();
-                const telLimpio = telInput.replace(/[^0-9]/g, '');
-                const telFinal = (telLimpio.length === 9) ? ('56' + telLimpio) : telLimpio;
+            // ---- Mensaje para el TECNICO (con formato para WhatsApp del operador) ----
+            var lineasTecnico = [
+                'DESPACHO ZEROPINCHAZO',
+                '========================',
+                'Servicio: ' + nombreServicio,
+                'Direccion Cliente: ' + APP.cliente.direccion,
+                'Google Maps: https://www.google.com/maps/dir/?api=1&destination=' + cLat + ',' + cLng,
+                'Distancia: ' + km.toFixed(1) + ' km',
+                'ETA: ~' + minutos + ' min',
+                'Valor a cobrar: ' + formatoCLP(estimado),
+                '========================',
+                'Confirma que inicias ruta al destino.'
+            ];
+            var mensajeTecnico = lineasTecnico.join('\n');
 
-                const url = telFinal 
-                    ? ("https://api.whatsapp.com/send?phone=" + telFinal + "&text=" + encodeURIComponent(textoFinal))
-                    : ("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoFinal));
+            var telTecnico = APP.tarifas.whatsappTecnico.replace(/[^0-9]/g, '');
+            document.getElementById('btnDespacharTecnicoWsp').href =
+                'https://wa.me/' + telTecnico + '?text=' + encodeURIComponent(mensajeTecnico);
 
-                window.open(url, '_blank');
-            };
-
-            const btnCliente = document.getElementById('btnEnviarClienteWsp');
-            btnCliente.onclick = window.enviarWhatsAppCliente;
-            btnCliente.href = "#";
-
-            // Enlace WhatsApp Técnico (con número oficial)
-            const mensajeTecnico = 
-                `🚨 *DESPACHO DE EMERGENCIA - ZEROPINCHAZO*\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `🔧 *Servicio:* ${nombreServicio}\n` +
-                `📍 *Dirección Cliente:* ${APP.cliente.direccion}\n` +
-                `🗺️ *Ruta Google Maps:* https://www.google.com/maps/dir/?api=1&destination=${cLat},${cLng}\n` +
-                `📏 *Distancia:* ${km.toFixed(1)} km | ⏱️ *ETA:* ~${minutos} min\n` +
-                `💰 *Valor a cobrar:* ${formatoCLP(estimado)}\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `👉 Por favor confirma que inicias ruta al destino.`;
-
-            const telTecnico = APP.tarifas.whatsappTecnico.replace(/[^0-9]/g, '');
-            document.getElementById('btnDespacharTecnicoWsp').href = `https://wa.me/${telTecnico}?text=${encodeURIComponent(mensajeTecnico)}`;
-
-            const card = document.getElementById('cardResultado');
+            // Mostrar card resultado
+            var card = document.getElementById('cardResultado');
             card.classList.remove('hidden');
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            card.classList.add('slide-up');
+            setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
             lucide.createIcons();
         }
 
+        // ---- Enviar WhatsApp al cliente (lee textarea en tiempo real) ----
+        function enviarWhatsAppCliente(e) {
+            if (e) e.preventDefault();
+            var textoFinal = document.getElementById('txtMensajeCliente').value;
+            var telInput   = document.getElementById('inputTelefonoCliente').value.trim();
+            var telLimpio  = telInput.replace(/[^0-9]/g, '');
+            var telFinal   = (telLimpio.length === 9) ? ('56' + telLimpio) : telLimpio;
+
+            var url = telFinal
+                ? ('https://api.whatsapp.com/send?phone=' + telFinal + '&text=' + encodeURIComponent(textoFinal))
+                : ('https://api.whatsapp.com/send?text=' + encodeURIComponent(textoFinal));
+
+            window.open(url, '_blank');
+            return false;
+        }
+
+        // ---- Copiar mensaje ----
         function copiarMensajeCliente() {
-            const txt = document.getElementById('txtMensajeCliente');
+            var txt = document.getElementById('txtMensajeCliente');
             txt.select();
             txt.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(txt.value).then(() => {
-                const btn = document.getElementById('btnCopiarTexto');
-                btn.innerText = '¡Copiado! ✓';
-                setTimeout(() => { btn.innerText = 'Copiar Texto'; }, 2000);
+            navigator.clipboard.writeText(txt.value).then(function() {
+                var btn = document.getElementById('btnCopiarTexto');
+                btn.innerText = 'Copiado!';
+                setTimeout(function() { btn.innerText = 'Copiar Texto'; }, 2000);
+            }).catch(function() {
+                // fallback para navegadores sin clipboard API
+                document.execCommand('copy');
+                var btn = document.getElementById('btnCopiarTexto');
+                btn.innerText = 'Copiado!';
+                setTimeout(function() { btn.innerText = 'Copiar Texto'; }, 2000);
             });
         }
 
+        // ---- Dibujar mapa Leaflet ----
         function dibujarMapa(geometry) {
             if (!APP.map) {
-                APP.map = L.map('map', { zoomControl: false }).setView([APP.tecnico.lat, APP.tecnico.lng], 13);
+                APP.map = L.map('map', { zoomControl: false })
+                           .setView([APP.tecnico.lat, APP.tecnico.lng], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    attribution: '© OpenStreetMap'
+                    attribution: '&copy; OpenStreetMap'
                 }).addTo(APP.map);
             }
 
-            APP.layers.forEach(l => APP.map.removeLayer(l));
+            APP.layers.forEach(function(l) { APP.map.removeLayer(l); });
             APP.layers = [];
 
-            const iconTecnico = L.divIcon({
-                html: '<div style="background:#f59e0b;color:#0f172a;padding:7px;border-radius:12px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">🚗</div>',
+            var iconTecnico = L.divIcon({
+                html: '<div style="background:#f59e0b;color:#0f172a;padding:7px;border-radius:12px;font-weight:900;font-size:16px;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,0.2)">T</div>',
                 className: '',
                 iconSize: [32, 32]
             });
-            const mTecnico = L.marker([APP.tecnico.lat, APP.tecnico.lng], { icon: iconTecnico }).addTo(APP.map);
+            var mTecnico = L.marker([APP.tecnico.lat, APP.tecnico.lng], { icon: iconTecnico })
+                .bindPopup('<b>Tecnico</b><br>' + APP.tecnico.nombre)
+                .addTo(APP.map);
             APP.layers.push(mTecnico);
 
-            const iconCliente = L.divIcon({
-                html: '<div style="background:#16a34a;color:#ffffff;padding:7px;border-radius:12px;font-weight:900;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(0,0,0,0.15)">📍</div>',
+            var iconCliente = L.divIcon({
+                html: '<div style="background:#16a34a;color:#fff;padding:7px;border-radius:12px;font-weight:900;font-size:16px;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,0.2)">C</div>',
                 className: '',
                 iconSize: [32, 32]
             });
-            const mCliente = L.marker([APP.cliente.lat, APP.cliente.lng], { icon: iconCliente }).addTo(APP.map);
+            var mCliente = L.marker([APP.cliente.lat, APP.cliente.lng], { icon: iconCliente })
+                .bindPopup('<b>Cliente</b><br>' + APP.cliente.direccion)
+                .addTo(APP.map);
             APP.layers.push(mCliente);
 
             if (geometry) {
-                const poly = L.geoJSON(geometry, {
-                    style: { color: '#2563eb', weight: 5, opacity: 0.85 }
+                var poly = L.geoJSON(geometry, {
+                    style: { color: '#2563eb', weight: 5, opacity: 0.85, dashArray: null }
                 }).addTo(APP.map);
                 APP.layers.push(poly);
                 APP.map.fitBounds(poly.getBounds(), { padding: [30, 30] });
             } else {
-                const g = L.featureGroup([mTecnico, mCliente]);
+                var g = L.featureGroup([mTecnico, mCliente]);
                 APP.map.fitBounds(g.getBounds(), { padding: [30, 30] });
             }
 
-            setTimeout(() => APP.map.invalidateSize(), 200);
+            setTimeout(function() { APP.map.invalidateSize(); }, 200);
         }
 
+        // ---- Inicializacion ----
         actualizarEtiquetaTecnico();
-        ejecutarCotizacion();
+
+        // Cerrar modales al hacer clic en el overlay
+        document.getElementById('modalConfig').addEventListener('click', function(e) {
+            if (e.target === this) toggleModalConfig();
+        });
+        document.getElementById('modalCoordenadas').addEventListener('click', function(e) {
+            if (e.target === this) toggleModalCoordenadas();
+        });
     </script>
 </body>
 </html>
