@@ -7,7 +7,7 @@
     
     <!-- Meta & Theme -->
     <meta name="theme-color" content="#f59e0b">
-    <meta name="description" content="Panel de control y cotizador rápido de vulcanización móvil para el operador. Cotiza y despacha en segundos vía WhatsApp.">
+    <meta name="description" content="Centro de despacho de vulcanización móvil y auxilio de baterías en Santiago de Chile. Cotizador oficial ZeroPinchazo.">
 
     <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,39 +72,39 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-amber-100 selection:text-amber-900">
 
-    <!-- Barra Superior: Rol Operador / Despacho -->
+    <!-- Header Oficial ZeroPinchazo -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow-md shadow-amber-500/20">
-                    <i data-lucide="headphones" class="w-5 h-5 text-slate-950"></i>
+                    <i data-lucide="wrench" class="w-5 h-5 text-slate-950"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-heading font-black text-lg text-slate-900 tracking-tight">ZeroPinchazo</span>
-                        <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">PANEL OPERADOR</span>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">OFICIAL • 24/7</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
                         <span class="relative flex h-2 w-2">
                             <span class="ping-soft absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        <span>Cotizador Express • Enlace Cliente & Técnico</span>
+                        <span>Santiago RM • WhatsApp Emergencia: +56 9 9368 1033</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Botón Ajustar Tarifas Base -->
+            <!-- Botón Ajustes de Tarifas -->
             <button onclick="toggleModalConfig()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="Ajustes de Tarifas">
                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
             </button>
         </div>
     </header>
 
-    <!-- Contenedor de Trabajo del Operador -->
-    <main class="max-w-xl w-full mx-auto px-4 py-4 flex-1 flex flex-col gap-4">
+    <!-- Contenedor Principal del Operador -->
+    <main class="max-w-xl w-full mx-auto px-4 py-4 flex-1 flex flex-col gap-3.5">
 
-        <!-- PASO 1: ¿Dónde está el Técnico? (Posición Rápida con 1 Clic) -->
+        <!-- PASO 1: Posición del Técnico en Terreno (Con las comunas reales de cobertura) -->
         <div class="bg-white border border-slate-200 rounded-3xl p-4 card-shadow">
             <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
@@ -122,32 +122,54 @@
                 </button>
             </div>
 
-            <!-- Botones de Comunas Rápidas -->
+            <!-- Comunas de Cobertura Oficial ZeroPinchazo -->
             <div class="grid grid-cols-4 gap-1.5 pt-1 text-xs">
-                <button onclick="setPosicionTecnico(-33.4372, -70.6345, 'Santiago Centro')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Centro</button>
+                <button onclick="setPosicionTecnico(-33.4372, -70.6345, 'Santiago Centro')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Stgo Centro</button>
                 <button onclick="setPosicionTecnico(-33.4255, -70.6120, 'Providencia')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Providencia</button>
                 <button onclick="setPosicionTecnico(-33.4115, -70.5785, 'Las Condes')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Las Condes</button>
+                <button onclick="setPosicionTecnico(-33.3850, -70.5850, 'Vitacura')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Vitacura</button>
+                <button onclick="setPosicionTecnico(-33.3550, -70.5150, 'Lo Barnechea')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Lo Barnechea</button>
+                <button onclick="setPosicionTecnico(-33.4560, -70.6020, 'Ñuñoa')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Ñuñoa</button>
+                <button onclick="setPosicionTecnico(-33.4450, -70.5350, 'La Reina')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">La Reina</button>
+                <button onclick="setPosicionTecnico(-33.4900, -70.5950, 'Macul')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Macul</button>
+                <button onclick="setPosicionTecnico(-33.4850, -70.5400, 'Peñalolén')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Peñalolén</button>
                 <button onclick="setPosicionTecnico(-33.5130, -70.5980, 'La Florida')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">La Florida</button>
                 <button onclick="setPosicionTecnico(-33.5100, -70.7570, 'Maipú')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Maipú</button>
-                <button onclick="setPosicionTecnico(-33.4560, -70.6020, 'Ñuñoa')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Ñuñoa</button>
-                <button onclick="setPosicionTecnico(-33.4350, -70.7800, 'Pudahuel / R68')" class="btn-comuna bg-slate-100 hover:bg-amber-500 hover:text-white text-slate-700 py-1.5 rounded-xl font-semibold transition text-center truncate">Pudahuel</button>
-                <button onclick="abrirCoordenadasManuales()" class="btn-comuna bg-slate-200 hover:bg-slate-300 text-slate-800 py-1.5 rounded-xl font-semibold transition text-center truncate">+ Coordenadas</button>
+                <button onclick="abrirCoordenadasManuales()" class="btn-comuna bg-slate-200 hover:bg-slate-300 text-slate-800 py-1.5 rounded-xl font-semibold transition text-center truncate">+ Manual</button>
             </div>
         </div>
 
-        <!-- PASO 2: Datos del Cliente que te está consultando -->
+        <!-- PASO 2: Selección de Servicio + Ubicación del Cliente -->
         <div class="bg-white border border-slate-200 rounded-3xl p-5 card-shadow space-y-3.5">
             <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 2: Datos del Cliente</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Paso 2: Servicio y Destino</span>
                 <h2 class="font-heading font-black text-lg text-slate-900 leading-tight">
-                    ¿Qué dirección te dio el cliente?
+                    ¿Qué servicio necesita el cliente?
                 </h2>
                 <p class="text-xs text-slate-500">
-                    Pega la dirección, el cruce de calles o el enlace de Google Maps que te envió el cliente por WhatsApp.
+                    Servicios oficiales de terreno para Autos, SUV y Camionetas.
                 </p>
             </div>
 
-            <!-- Input de Dirección o Coordenadas del Cliente -->
+            <!-- Selector de Tipo de Servicio de ZeroPinchazo -->
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition" id="lblServicioVulca">
+                    <input type="radio" name="tipoServicio" value="vulcanizacion" checked onchange="cambiarTipoServicio('vulcanizacion')" class="accent-amber-500">
+                    <div>
+                        <span class="font-bold text-slate-900 block leading-none">Vulcanización Móvil</span>
+                        <span class="text-[10px] text-slate-500">Pinchazo / Desmonte / Rueda</span>
+                    </div>
+                </label>
+                <label class="cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition" id="lblServicioBateria">
+                    <input type="radio" name="tipoServicio" value="bateria" onchange="cambiarTipoServicio('bateria')" class="accent-amber-500">
+                    <div>
+                        <span class="font-bold text-slate-900 block leading-none">Auxilio de Batería</span>
+                        <span class="text-[10px] text-slate-500">Puente / Carga en terreno</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Formulario de Ubicación -->
             <form onsubmit="ejecutarCotizacion(event)" class="space-y-3">
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -156,23 +178,15 @@
                     <input 
                         type="text" 
                         id="inputDireccionCliente" 
-                        placeholder="Ej: Av. Providencia 1234, Providencia (o coordenadas)" 
+                        placeholder="Dirección, cruce o coordenadas del cliente..." 
                         value="Av. Providencia 1234, Santiago"
-                        class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 transition"
+                        class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-2xl py-3 pl-10 pr-4 text-xs font-semibold text-slate-800 placeholder-slate-400 transition"
                     >
-                </div>
-
-                <!-- Chips de prueba rápida -->
-                <div class="flex flex-wrap gap-1.5 text-[11px]">
-                    <span class="text-slate-400 text-[10px] self-center mr-1">Ejemplos:</span>
-                    <button type="button" onclick="setDireccionRapida('Plaza Italia, Santiago')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Plaza Italia</button>
-                    <button type="button" onclick="setDireccionRapida('Mall Plaza Vespucio, La Florida')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Vespucio</button>
-                    <button type="button" onclick="setDireccionRapida('Costanera Center, Providencia')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-xl transition">Costanera</button>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">WhatsApp del Cliente (Opcional):</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">WhatsApp Cliente (Opcional):</label>
                         <input 
                             type="text" 
                             id="inputTelefonoCliente" 
@@ -190,7 +204,7 @@
             </form>
         </div>
 
-        <!-- PASO 3: Resultado de Cotización + Generador de Mensajes WhatsApp -->
+        <!-- PASO 3: Presupuesto + Despacho WhatsApp Oficial -->
         <div id="cardResultado" class="hidden bg-white border-2 border-emerald-500/30 rounded-3xl p-5 card-shadow space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-200">
             
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
@@ -199,11 +213,11 @@
                         ✓
                     </span>
                     <h3 class="font-heading font-black text-sm text-slate-900 uppercase tracking-wide">
-                        Cotización Calculada
+                        Presupuesto ZeroPinchazo
                     </h3>
                 </div>
-                <span id="labelProveedorRuta" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                    Ruta en vivo (OSRM)
+                <span id="labelServicioSeleccionado" class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                    Vulcanización Móvil
                 </span>
             </div>
 
@@ -214,7 +228,7 @@
                     <span id="resKm" class="font-heading text-lg font-black text-slate-900">0.0 km</span>
                 </div>
                 <div class="bg-amber-50 border border-amber-100 rounded-2xl p-2.5">
-                    <span class="text-[10px] uppercase font-bold text-amber-700 block mb-0.5">Tiempo Llegada</span>
+                    <span class="text-[10px] uppercase font-bold text-amber-700 block mb-0.5">Llegada</span>
                     <span id="resMin" class="font-heading text-lg font-black text-amber-700">~0 min</span>
                 </div>
                 <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-2.5">
@@ -226,15 +240,15 @@
             <!-- Desglose de Tarifas -->
             <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 text-xs space-y-1.5">
                 <div class="flex justify-between text-slate-600">
-                    <span>Salida técnica base:</span>
+                    <span id="txtLabelBase">Salida y diagnóstico técnico:</span>
                     <span id="desgloseBase" class="font-bold text-slate-800">$15.000</span>
                 </div>
                 <div class="flex justify-between text-slate-600">
-                    <span>Km extras (<span id="desgloseKmExtra">0 km</span> adicionales):</span>
+                    <span>Desplazamiento (<span id="desgloseKmExtra">0 km</span> extras):</span>
                     <span id="desgloseKmCosto" class="font-bold text-slate-800">$0</span>
                 </div>
                 <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center text-slate-900 font-bold">
-                    <span>Total Presupuestado (CLP):</span>
+                    <span>Total Estimado (CLP):</span>
                     <span id="desgloseTotalFinal" class="text-sm font-black text-emerald-600">$18.000</span>
                 </div>
                 <div class="text-[10px] text-slate-400 text-center italic">
@@ -252,7 +266,7 @@
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                         <i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i>
-                        Mensaje para responder al Cliente:
+                        Mensaje para enviar al Cliente:
                     </span>
                     <button onclick="copiarMensajeCliente()" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-xl transition flex items-center gap-1">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -263,7 +277,7 @@
                 <!-- Textarea con el mensaje comercial ya armado -->
                 <textarea 
                     id="txtMensajeCliente" 
-                    rows="5" 
+                    rows="6" 
                     class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-medium text-slate-800 leading-relaxed outline-none focus:bg-white focus:border-emerald-500"
                 ></textarea>
 
@@ -287,17 +301,18 @@
 
     </main>
 
-    <!-- Footer -->
+    <!-- Footer Oficial -->
     <footer class="py-3 text-center text-slate-400 text-xs border-t border-slate-200 bg-white">
-        <p class="font-medium text-slate-600">ZeroPinchazo Móvil • Despacho Rápido en Santiago</p>
+        <p class="font-medium text-slate-600">ZeroPinchazo® • Vulcanización Móvil y Auxilio de Baterías</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Santiago de Chile • www.zeropinchazo.cl • +56 9 9368 1033</p>
     </footer>
 
-    <!-- Modal Ajuste de Tarifas y WhatsApp del Técnico -->
+    <!-- Modal Ajuste de Tarifas y WhatsApp Oficial -->
     <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h4 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2">
-                    <i data-lucide="sliders" class="w-4 h-4 text-amber-500"></i> Ajustes del Negocio
+                    <i data-lucide="sliders" class="w-4 h-4 text-amber-500"></i> Ajustes ZeroPinchazo
                 </h4>
                 <button onclick="toggleModalConfig()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -306,8 +321,8 @@
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="text-slate-600 font-bold block mb-1">WhatsApp del Técnico (para despacharle la ruta):</label>
-                    <input type="text" id="cfgWhatsappTecnico" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="+56912345678">
+                    <label class="text-slate-600 font-bold block mb-1">WhatsApp del Técnico (para despacharle ruta):</label>
+                    <input type="text" id="cfgWhatsappTecnico" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-800 font-semibold" value="+56993681033">
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
@@ -361,11 +376,12 @@
         </div>
     </div>
 
-    <!-- Lógica de Operador -->
+    <!-- Lógica de Operador ZeroPinchazo -->
     <script>
         lucide.createIcons();
 
         const APP = {
+            servicioActual: 'vulcanizacion',
             tecnico: {
                 lat: parseFloat(localStorage.getItem('zp_lat')) || -33.4372,
                 lng: parseFloat(localStorage.getItem('zp_lng')) || -70.6345,
@@ -378,7 +394,7 @@
                 minimo: parseInt(localStorage.getItem('zp_min')) || 18000,
                 redondeo: 500,
                 margen: 0.10,
-                whatsappTecnico: localStorage.getItem('zp_wsp_tec') || '+56912345678'
+                whatsappTecnico: localStorage.getItem('zp_wsp_tec') || '+56993681033'
             },
             cliente: null,
             map: null,
@@ -399,6 +415,26 @@
 
         function abrirCoordenadasManuales() {
             toggleModalCoordenadas();
+        }
+
+        function cambiarTipoServicio(tipo) {
+            APP.servicioActual = tipo;
+            const lblVulca = document.getElementById('lblServicioVulca');
+            const lblBateria = document.getElementById('lblServicioBateria');
+            
+            if (tipo === 'vulcanizacion') {
+                lblVulca.className = "cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
+                lblBateria.className = "cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
+                document.getElementById('labelServicioSeleccionado').innerText = "Vulcanización Móvil";
+                document.getElementById('txtLabelBase').innerText = "Salida y diagnóstico técnico:";
+            } else {
+                lblBateria.className = "cursor-pointer border-2 border-amber-500 bg-amber-50/50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
+                lblVulca.className = "cursor-pointer border-2 border-slate-200 bg-slate-50 rounded-2xl p-2.5 flex items-center gap-2.5 transition";
+                document.getElementById('labelServicioSeleccionado').innerText = "Auxilio de Batería";
+                document.getElementById('txtLabelBase').innerText = "Salida y puente de batería in situ:";
+            }
+
+            if (APP.cliente) recalcularCotizacion();
         }
 
         function setPosicionTecnico(lat, lng, nombre) {
@@ -441,7 +477,7 @@
             APP.tarifas.precioKm = parseInt(document.getElementById('cfgPrecioKm').value) || 1200;
             APP.tarifas.kmIncluidos = parseInt(document.getElementById('cfgKmInc').value) || 3;
             APP.tarifas.minimo = parseInt(document.getElementById('cfgMinimo').value) || 18000;
-            APP.tarifas.whatsappTecnico = document.getElementById('cfgWhatsappTecnico').value.trim() || '+56912345678';
+            APP.tarifas.whatsappTecnico = document.getElementById('cfgWhatsappTecnico').value.trim() || '+56993681033';
 
             localStorage.setItem('zp_base', APP.tarifas.cargoBase);
             localStorage.setItem('zp_km', APP.tarifas.precioKm);
@@ -458,11 +494,6 @@
                 `${APP.tecnico.nombre} (${APP.tecnico.lat.toFixed(3)}, ${APP.tecnico.lng.toFixed(3)})`;
         }
 
-        function setDireccionRapida(dir) {
-            document.getElementById('inputDireccionCliente').value = dir;
-            ejecutarCotizacion(new Event('submit'));
-        }
-
         async function ejecutarCotizacion(e) {
             if (e) e.preventDefault();
             const query = document.getElementById('inputDireccionCliente').value.trim();
@@ -473,7 +504,6 @@
             btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Buscando...`;
 
             try {
-                // Verificar si el usuario escribió coordenadas directamente (ej: -33.42, -70.61)
                 const coordMatch = query.match(/(-?\d+\.\d+)[,\s]+(-?\d+\.\d+)/);
                 if (coordMatch) {
                     APP.cliente = {
@@ -495,7 +525,7 @@
                         };
                         await recalcularCotizacion();
                     } else {
-                        alert('No se encontró esa dirección. Intenta agregar la comuna (ej: Providencia, Santiago, Maipú).');
+                        alert('No se encontró esa dirección. Intenta agregar la comuna (ej: Santiago Centro, Providencia, Las Condes, Maipú).');
                     }
                 }
             } catch (err) {
@@ -562,37 +592,39 @@
             document.getElementById('desgloseTotalFinal').innerText = formatoCLP(estimado);
             document.getElementById('desgloseRango').innerText = `${formatoCLP(minimo)} a ${formatoCLP(maximo)}`;
 
-            // MENSAJE FORMATEADO PARA EL CLIENTE (Listo para responderle)
+            const nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanización Móvil' : 'Auxilio de Batería';
+
+            // MENSAJE OFICIAL FORMATEADO PARA EL CLIENTE
             const mensajeParaCliente = 
-                `¡Hola! 👋 Gracias por comunicarte con *ZeroPinchazo Móvil* 🛞⚡\n\n` +
-                `Para tu ubicación en *${APP.cliente.direccion}*:\n` +
-                `📏 *Distancia del móvil:* ${km.toFixed(1)} km\n` +
+                `¡Hola! 👋 Gracias por contactar a *ZeroPinchazo* - Servicio Oficial 24/7 🛞⚡\n\n` +
+                `Para tu solicitud de *${nombreServicio}* en *${APP.cliente.direccion}*:\n` +
+                `📏 *Distancia de la unidad:* ${km.toFixed(1)} km\n` +
                 `⏱️ *Tiempo estimado de llegada:* ~${minutos} minutos\n` +
                 `💰 *Presupuesto estimado:* *${formatoCLP(estimado)}* (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})\n\n` +
-                `Incluye salida técnica a domicilio, diagnóstico y reparación básica in situ.\n` +
-                `Aceptamos Efectivo, Transferencia y Tarjetas 💳\n\n` +
-                `¿Te enviamos al técnico de inmediato? *Responde SÍ para confirmar el despacho.*`;
+                `Incluye salida técnica en terreno, equipamiento especializado y trabajo in situ para Autos, SUV y Camionetas.\n` +
+                `Aceptamos Transferencia, Efectivo y Tarjetas 💳\n\n` +
+                `¿Deseas que te despachemos el móvil de inmediato? *Responde SÍ para confirmar el envío.*`;
 
             document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
 
-            // Link WhatsApp para responder al Cliente
+            // Enlace WhatsApp Cliente
             const telCliente = document.getElementById('inputTelefonoCliente').value.replace(/[^0-9]/g, '');
             const urlClienteWsp = telCliente 
                 ? `https://wa.me/${telCliente}?text=${encodeURIComponent(mensajeParaCliente)}`
                 : `https://wa.me/?text=${encodeURIComponent(mensajeParaCliente)}`;
             document.getElementById('btnEnviarClienteWsp').href = urlClienteWsp;
 
-            // Link WhatsApp para Despachar al Técnico
+            // Enlace WhatsApp Técnico (con número oficial)
             const mensajeTecnico = 
-                `🚨 *NUEVO SERVICIO DESPACHADO - ZEROPINCHAZO*\n` +
+                `🚨 *DESPACHO DE EMERGENCIA - ZEROPINCHAZO*\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `📍 *Destino Cliente:* ${APP.cliente.direccion}\n` +
-                `🗺️ *Ver en Google Maps:* https://www.google.com/maps/dir/?api=1&destination=${cLat},${cLng}\n` +
-                `📏 *Distancia estimada:* ${km.toFixed(1)} km\n` +
-                `⏱️ *Tiempo estimado:* ~${minutos} min\n` +
+                `🔧 *Servicio:* ${nombreServicio}\n` +
+                `📍 *Dirección Cliente:* ${APP.cliente.direccion}\n` +
+                `🗺️ *Ruta Google Maps:* https://www.google.com/maps/dir/?api=1&destination=${cLat},${cLng}\n` +
+                `📏 *Distancia:* ${km.toFixed(1)} km | ⏱️ *ETA:* ~${minutos} min\n` +
                 `💰 *Valor a cobrar:* ${formatoCLP(estimado)}\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `👉 Por favor confirmar que vas en camino al destino.`;
+                `👉 Por favor confirma que inicias ruta al destino.`;
 
             const telTecnico = APP.tarifas.whatsappTecnico.replace(/[^0-9]/g, '');
             document.getElementById('btnDespacharTecnicoWsp').href = `https://wa.me/${telTecnico}?text=${encodeURIComponent(mensajeTecnico)}`;
