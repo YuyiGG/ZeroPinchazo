@@ -594,56 +594,51 @@
 
             const nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanización Móvil' : 'Auxilio de Batería';
 
-                        // MENSAJE OFICIAL PARA EL CLIENTE (Formato ejecutivo y limpio sin asteriscos)
-            const mensajeParaCliente = 
-                `¡Hola! Gracias por comunicarte con ZeroPinchazo 🚗💨
-` +
-                `────────────────────────
-` +
-                `RESUMEN DE COTIZACIÓN EN RUTA
-` +
-                `────────────────────────
+                                    // Formateo del mensaje con saltos de línea reales y caracteres limpios
+            const lineas = [
+                "¡Hola! Gracias por comunicarte con ZeroPinchazo",
+                "----------------------------------------",
+                "RESUMEN DE COTIZACION EN RUTA",
+                "----------------------------------------",
+                "",
+                "• Servicio: " + nombreServicio,
+                "• Ubicacion: " + APP.cliente.direccion,
+                "• Distancia del movil: " + km.toFixed(1) + " km",
+                "• Tiempo de llegada: ~" + minutos + " minutos",
+                "",
+                "VALOR ESTIMADO:",
+                "> " + formatoCLP(estimado) + " CLP (Rango: " + formatoCLP(minimo) + " a " + formatoCLP(maximo) + ")",
+                "",
+                "DETALLES:",
+                "- Atencion tecnica en terreno para Autos, SUV y Camionetas",
+                "- Medios de pago: Transferencia, Efectivo y Tarjetas Redcompra/Credito",
+                "",
+                "¿Deseas confirmar el envio del movil?",
+                "Por favor responde SI para despachar al tecnico."
+            ];
 
-` +
-                `• Servicio: ${nombreServicio}
-` +
-                `• Ubicación: ${APP.cliente.direccion}
-` +
-                `• Distancia del móvil: ${km.toFixed(1)} km
-` +
-                `• Llegada estimada: ~${minutos} minutos
-
-` +
-                `VALOR ESTIMADO:
-` +
-                `👉 ${formatoCLP(estimado)} CLP (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})
-
-` +
-                `DETALLES DEL SERVICIO:
-` +
-                `✔ Atención técnica in situ para Autos, SUV y Camionetas.
-` +
-                `✔ Medios de pago: Transferencia, Efectivo y Tarjetas Redcompra/Crédito 💳
-
-` +
-                `¿Confirmamos el despacho del móvil hacia tu ubicación?
-` +
-                `Por favor responde SI para enviar la unidad de inmediato.`;
-
+            const mensajeParaCliente = lineas.join("
+");
             document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
 
-                        // Actualizar Enlace WhatsApp Cliente
-            const telInput = document.getElementById('inputTelefonoCliente').value.trim();
-            const telLimpio = telInput.replace(/[^0-9]/g, '');
-            
-            // Si el teléfono tiene 9 dígitos chilenos sin prefijo (ej: 993681033), agregar 56
-            const telFinal = (telLimpio.length === 9) ? ('56' + telLimpio) : telLimpio;
-            
-            const urlClienteWsp = telFinal 
-                ? `https://api.whatsapp.com/send?phone=${telFinal}&text=${encodeURIComponent(mensajeParaCliente)}`
-                : `https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeParaCliente)}`;
-            
-            document.getElementById('btnEnviarClienteWsp').href = urlClienteWsp;
+            // Función de envío dinámico que toma cualquier edición hecha en el textarea
+            window.enviarWhatsAppCliente = function(e) {
+                if (e) e.preventDefault();
+                const textoFinal = document.getElementById('txtMensajeCliente').value;
+                const telInput = document.getElementById('inputTelefonoCliente').value.trim();
+                const telLimpio = telInput.replace(/[^0-9]/g, '');
+                const telFinal = (telLimpio.length === 9) ? ('56' + telLimpio) : telLimpio;
+
+                const url = telFinal 
+                    ? ("https://api.whatsapp.com/send?phone=" + telFinal + "&text=" + encodeURIComponent(textoFinal))
+                    : ("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoFinal));
+
+                window.open(url, '_blank');
+            };
+
+            const btnCliente = document.getElementById('btnEnviarClienteWsp');
+            btnCliente.onclick = window.enviarWhatsAppCliente;
+            btnCliente.href = "#";
 
             // Enlace WhatsApp Técnico (con número oficial)
             const mensajeTecnico = 
