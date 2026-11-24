@@ -594,24 +594,55 @@
 
             const nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanización Móvil' : 'Auxilio de Batería';
 
-            // MENSAJE OFICIAL PARA EL CLIENTE (Sin asteriscos)
+                        // MENSAJE OFICIAL PARA EL CLIENTE (Formato ejecutivo y limpio sin asteriscos)
             const mensajeParaCliente = 
-                `¡Hola! 👋 Gracias por contactar a ZeroPinchazo - Servicio Oficial 24/7 🛞⚡\n\n` +
-                `Para tu solicitud de ${nombreServicio} en ${APP.cliente.direccion}:\n` +
-                `📏 Distancia de la unidad: ${km.toFixed(1)} km\n` +
-                `⏱️ Tiempo estimado de llegada: ~${minutos} minutos\n` +
-                `💰 Presupuesto estimado: ${formatoCLP(estimado)} (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})\n\n` +
-                `Incluye salida técnica en terreno, equipamiento especializado y trabajo in situ para Autos, SUV y Camionetas.\n` +
-                `Aceptamos Transferencia, Efectivo y Tarjetas 💳\n\n` +
-                `¿Deseas que te despachemos el móvil de inmediato? Responde SÍ para confirmar el envío.`;
+                `¡Hola! Gracias por comunicarte con ZeroPinchazo 🚗💨
+` +
+                `────────────────────────
+` +
+                `RESUMEN DE COTIZACIÓN EN RUTA
+` +
+                `────────────────────────
+
+` +
+                `• Servicio: ${nombreServicio}
+` +
+                `• Ubicación: ${APP.cliente.direccion}
+` +
+                `• Distancia del móvil: ${km.toFixed(1)} km
+` +
+                `• Llegada estimada: ~${minutos} minutos
+
+` +
+                `VALOR ESTIMADO:
+` +
+                `👉 ${formatoCLP(estimado)} CLP (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})
+
+` +
+                `DETALLES DEL SERVICIO:
+` +
+                `✔ Atención técnica in situ para Autos, SUV y Camionetas.
+` +
+                `✔ Medios de pago: Transferencia, Efectivo y Tarjetas Redcompra/Crédito 💳
+
+` +
+                `¿Confirmamos el despacho del móvil hacia tu ubicación?
+` +
+                `Por favor responde SI para enviar la unidad de inmediato.`;
 
             document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
 
-            // Enlace WhatsApp Cliente
-            const telCliente = document.getElementById('inputTelefonoCliente').value.replace(/[^0-9]/g, '');
-            const urlClienteWsp = telCliente 
-                ? `https://wa.me/${telCliente}?text=${encodeURIComponent(mensajeParaCliente)}`
-                : `https://wa.me/?text=${encodeURIComponent(mensajeParaCliente)}`;
+                        // Actualizar Enlace WhatsApp Cliente
+            const telInput = document.getElementById('inputTelefonoCliente').value.trim();
+            const telLimpio = telInput.replace(/[^0-9]/g, '');
+            
+            // Si el teléfono tiene 9 dígitos chilenos sin prefijo (ej: 993681033), agregar 56
+            const telFinal = (telLimpio.length === 9) ? ('56' + telLimpio) : telLimpio;
+            
+            const urlClienteWsp = telFinal 
+                ? `https://api.whatsapp.com/send?phone=${telFinal}&text=${encodeURIComponent(mensajeParaCliente)}`
+                : `https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeParaCliente)}`;
+            
             document.getElementById('btnEnviarClienteWsp').href = urlClienteWsp;
 
             // Enlace WhatsApp Técnico (con número oficial)
