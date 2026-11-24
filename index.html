@@ -594,16 +594,16 @@
 
             const nombreServicio = APP.servicioActual === 'vulcanizacion' ? 'Vulcanización Móvil' : 'Auxilio de Batería';
 
-            // MENSAJE OFICIAL FORMATEADO PARA EL CLIENTE
+            // MENSAJE OFICIAL PARA EL CLIENTE (Sin asteriscos)
             const mensajeParaCliente = 
-                `¡Hola! 👋 Gracias por contactar a *ZeroPinchazo* - Servicio Oficial 24/7 🛞⚡\n\n` +
-                `Para tu solicitud de *${nombreServicio}* en *${APP.cliente.direccion}*:\n` +
-                `📏 *Distancia de la unidad:* ${km.toFixed(1)} km\n` +
-                `⏱️ *Tiempo estimado de llegada:* ~${minutos} minutos\n` +
-                `💰 *Presupuesto estimado:* *${formatoCLP(estimado)}* (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})\n\n` +
+                `¡Hola! 👋 Gracias por contactar a ZeroPinchazo - Servicio Oficial 24/7 🛞⚡\n\n` +
+                `Para tu solicitud de ${nombreServicio} en ${APP.cliente.direccion}:\n` +
+                `📏 Distancia de la unidad: ${km.toFixed(1)} km\n` +
+                `⏱️ Tiempo estimado de llegada: ~${minutos} minutos\n` +
+                `💰 Presupuesto estimado: ${formatoCLP(estimado)} (Rango: ${formatoCLP(minimo)} a ${formatoCLP(maximo)})\n\n` +
                 `Incluye salida técnica en terreno, equipamiento especializado y trabajo in situ para Autos, SUV y Camionetas.\n` +
                 `Aceptamos Transferencia, Efectivo y Tarjetas 💳\n\n` +
-                `¿Deseas que te despachemos el móvil de inmediato? *Responde SÍ para confirmar el envío.*`;
+                `¿Deseas que te despachemos el móvil de inmediato? Responde SÍ para confirmar el envío.`;
 
             document.getElementById('txtMensajeCliente').value = mensajeParaCliente;
 
